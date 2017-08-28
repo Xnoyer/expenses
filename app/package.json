@@ -1,0 +1,15 @@
+{
+  "name": "expenses",
+  "version": "1.0.0",
+  "description": "Test task for Akvelon",
+  "main": "server/backend",
+  "scripts": {
+	"test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "m.stets",
+  "license": "UNLICENSED",
+  "repository": "bitbucket:m_stets/expenses",
+  "dependencies": {
+	"express": "^4.15.4"
+  }
+}
