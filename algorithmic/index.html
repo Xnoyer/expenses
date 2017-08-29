@@ -1,19 +1,48 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <script src="01_Stack.js"></script>
-    <meta charset="UTF-8">
-    <title>Algorithmic</title>
+	<script src="02_Binary_Search.js"></script>
+	<meta charset="UTF-8">
+	<title>Algorithmic</title>
 </head>
 <body>
 
+<span id="02"></span>
+
 <script>
-    var stack = new Stack();
-    stack.push(1);
-    stack.push(2);
-    stack.push(3);
-    stack.push(4);
-    
+	
+	var arr = [], i;
+	for (i = 0; i < 1000; i++)
+	{
+		var num = Math.ceil(Math.random() * 200);
+		if (arr.indexOf(num) === -1)
+			arr.push(num);
+	}
+	
+	arr.sort(function (a, b)
+	{
+		return a - b;
+	});
+	
+	var span = document.getElementById("02"),
+		target = Math.ceil(Math.random() * 150);
+	
+	span.innerHTML = "Searching for integer " + target + "...<br />";
+	
+	var idx = binarySearch(arr, target);
+	
+	span.innerHTML += "found index is " + idx;
+	if (idx === -1)
+		span.innerHTML += " nothing found";
+	else
+	{
+		span.innerHTML += "<br />rolling neighboring 10 elements...<br />...";
+		lowerSubArr = arr.slice(Math.max(idx - 5, 0), idx);
+		higherSubArr = arr.slice(idx + 1, Math.min(idx + 6, arr.length));
+		span.innerHTML += lowerSubArr.join(",") + ",<b>" + arr[idx] + "</b>," + higherSubArr.join(",") + "...";
+	}
+
+
 </script>
 
 </body>
