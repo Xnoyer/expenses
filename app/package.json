@@ -12,6 +12,8 @@
   "repository": "bitbucket:m_stets/expenses",
   "dependencies": {
 	"babel": "^6.23.0",
+	"body-parser": "^1.17.2",
+	"cookie-parser": "^1.4.3",
 	"express": "^4.15.4",
 	"path": "^0.12.7",
 	"react": "^15.6.1",

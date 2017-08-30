@@ -15,10 +15,10 @@ proto.sendPost = function (url, headers, body) {
 				if (this.status === 200)
 					resolve({ ResponseText: this.responseText });
 				else
-					reject({ ResponseText: this.responseText, Status: this.status, Url: settings.Url });
+					reject({ ResponseText: this.responseText, Status: this.status, Url: url });
 			}
 		};
-		xhr.open("POST", url, false);
+		xhr.open("POST", url, true);
 		if (headers)
 		{
 			for (var i = 0; i < headers.length; i++)

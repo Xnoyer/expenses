@@ -6,5 +6,10 @@ document.addEventListener("DOMContentLoaded", init);
 
 function init ()
 {
-	service.sendPost("localhost:3000/Service/test", null, { test: 1 });
+	service.sendPost("http://localhost:3000/Service/test", [{
+		Name: "Content-Type",
+		Value: "application/json"
+	}], JSON.stringify({ key: "value" })).then(function (arg) {
+		alert(arg.ResponseText)
+	});
 }
