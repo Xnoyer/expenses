@@ -13,7 +13,7 @@ proto.sendPost = function (url, headers, body) {
 			if (this.readyState === 4)
 			{
 				if (this.status === 200)
-					resolve({ ResponseText: this.responseText });
+					resolve({ ResponseText: this.responseText, ResponseJSON: JSON.parse(this.responseText) });
 				else
 					reject({ ResponseText: this.responseText, Status: this.status, Url: url });
 			}

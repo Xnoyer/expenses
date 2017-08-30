@@ -1,21 +1,10 @@
 var sqlite3 = require('sqlite3').verbose();
-var db = new sqlite3.Database('db/database.sqlite');
+var db = new sqlite3.Database('db/database.sqlite', sqlite3.OPEN_READWRITE);
 
-db.serialize(function () {
 
-	db.run('CREATE TABLE lorem (info TEXT)');
-	var stmt = db.prepare('INSERT INTO lorem VALUES (?)');
+module.exports =
+{
 
-	for (var i = 0; i < 10; i++)
-	{
-		stmt.run('Ipsum ' + i);
-	}
-
-	stmt.finalize();
-
-	db.each('SELECT rowid AS id, info FROM lorem', function (err, row) {
-		console.log(row.id + ': ' + row.info);
-	});
-});
+};
 
 db.close();

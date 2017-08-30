@@ -4,24 +4,25 @@
   "description": "Test task for Akvelon",
   "main": "server/backend",
   "scripts": {
-	"test": "echo \"Error: no test specified\" && exit 1",
-	"initdb": "node server/init_db.js"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "initdb": "node server/init_db.js"
   },
   "author": "m.stets",
   "license": "UNLICENSED",
   "repository": "bitbucket:m_stets/expenses",
   "dependencies": {
-	"babel": "^6.23.0",
-	"body-parser": "^1.17.2",
-	"cookie-parser": "^1.4.3",
-	"express": "^4.15.4",
-	"path": "^0.12.7",
-	"react": "^15.6.1",
-	"react-dom": "^15.6.1"
+    "babel": "^6.23.0",
+    "body-parser": "^1.17.2",
+    "cookie-parser": "^1.4.3",
+    "express": "^4.15.4",
+    "path": "^0.12.7",
+    "react": "^15.6.1",
+    "react-dom": "^15.6.1"
   },
   "devDependencies": {
-	"webpack": "^3.5.5",
-	"webpack-dev-middleware": "^1.12.0",
-	"webpack-hot-middleware": "^2.18.2"
+    "sqlite3": "^3.1.9",
+    "webpack": "^3.5.5",
+    "webpack-dev-middleware": "^1.12.0",
+    "webpack-hot-middleware": "^2.18.2"
   }
 }
