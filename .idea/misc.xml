@@ -3,7 +3,9 @@
   <component name="CopyrightManager" default="">
     <module2copyright />
   </component>
-  <component name="ProjectRootManager" version="2" languageLevel="JDK_1_6" />
+  <component name="JavaScriptSettings">
+    <option name="languageLevel" value="JSX" />
+  </component>
   <component name="masterDetails">
     <states>
       <state key="ProjectJDKs.UI">
