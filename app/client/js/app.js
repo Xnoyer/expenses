@@ -14,7 +14,7 @@ function init ()
 				UserName: null
 			};
 
-		function drawInterface ()
+		this.drawInterface = function ()
 		{
 			let auth_header = ReactDOM.render(<AuthHeader />, document.getElementById('menu'));
 		}
@@ -24,11 +24,11 @@ function init ()
 		Name: "Content-Type",
 		Value: "application/json"
 	}], JSON.stringify({Method: "CheckAuth" })).then(function (arg) {
-		if (arg.Result === "Unauthorized")
+		if (arg.ResponseJSON.Result === "Unauthorized")
 		{
 			app.state.Authorized = false;
 			app.state.UserName = null;
-			app.drawInterface();
 		}
+		app.drawInterface();
 	});
 }

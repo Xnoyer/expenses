@@ -11,20 +11,13 @@
   "license": "UNLICENSED",
   "repository": "bitbucket:m_stets/expenses",
   "dependencies": {
-    "babel": "^6.23.0",
+    "sqlite3": "^3.1.9",
     "body-parser": "^1.17.2",
     "cookie-parser": "^1.4.3",
     "express": "^4.15.4",
-    "path": "^0.12.7",
-    "react": "^15.6.1",
-    "react-dom": "^15.6.1"
+    "path": "^0.12.7"
   },
   "devDependencies": {
-	"babel-core": "^6.26.0",
-	"babel-loader": "^7.1.2",
-	"babel-preset-es2015": "^6.24.1",
-	"babel-preset-react": "^6.24.1",
-    "sqlite3": "^3.1.9",
     "webpack": "^3.5.5",
     "webpack-dev-middleware": "^1.12.0",
     "webpack-hot-middleware": "^2.18.2"
