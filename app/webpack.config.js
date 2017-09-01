@@ -12,18 +12,6 @@ module.exports = {
 		filename: 'app.js',
 		publicPath: '/static/'
 	},
-	module: {
-		loaders: [
-			{
-				test: /.jsx?$/,
-				loader: 'babel-loader',
-				exclude: '/node_modules',
-				query: {
-					presets: ['es2015', 'react']
-				}
-			}
-		]
-	},
 	plugins: [
 		new webpack.HotModuleReplacementPlugin(),
 		new webpack.NoEmitOnErrorsPlugin()
