@@ -8,5 +8,10 @@ module.exports =
 		{
 			return {Result: "Unauthorized"};
 		}
+	},
+	
+	Auth: function (body, cookies)
+	{
+		throw new Error("Incorrect Credentials");
 	}
 };

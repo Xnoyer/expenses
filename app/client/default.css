@@ -5,8 +5,8 @@ html, body
 
 body
 {
-	margin: 0px;
-	padding: 0px;
+	margin: 0;
+	padding: 0;
 	background: #FFF;
 	font-family: 'Source Sans Pro', sans-serif;
 	font-size: 12pt;
@@ -53,7 +53,7 @@ a:hover
 .container
 {
 	overflow: hidden;
-	margin: 0em auto;
+	margin: 0 auto;
 	width: 1200px;
 	display: flex;
 	justify-content: space-between;
@@ -74,12 +74,12 @@ ul.style1 li
 {
 	float: left;
 	display: inline-block;
-	padding: 0px 0px 0px 20px;
+	padding: 0 0 0 20px;
 }
 
 ul.style1 li:first-child
 {
-	padding-left: 0px;
+	padding-left: 0;
 }
 
 ul.style3
@@ -95,7 +95,7 @@ ul.style3 li
 {
 	overflow: hidden;
 	display: block;
-	padding: 0.8em 0em 0em 0em;
+	padding: 0.8em 0 0 0;
 	margin: 0 0 1.3em 0;
 	border-top: 1px solid #D1CFCE;
 }
@@ -125,7 +125,7 @@ ul.style3 a:hover
 
 ul.style3 h3
 {
-	padding: 15px 0em 5px 0em;
+	padding: 15px 0 5px 0;
 	text-transform: uppercase;
 	font-size: 1.1em;
 	font-weight: 700;
@@ -144,14 +144,14 @@ ul.style3 .date
 	position: relative;
 	width: 60px;
 	height: 50px;
-	margin: 10px 1.5em 0em 0em;
-	padding: 10px 0em 0em 0em;
+	margin: 10px 1.5em 0 0;
+	padding: 10px 0 0 0;
 	background: #0173B2;
-	box-shadow: 0px 0px 0px 5px rgba(255, 255, 255, 0.1);
+	box-shadow: 0 0 0 5px rgba(255, 255, 255, 0.1);
 	line-height: normal;
 	text-align: center;
 	text-transform: uppercase;
-	text-shadow: 0px 1px 0px rgba(0, 0, 0, .2);
+	text-shadow: 0 1px 0 rgba(0, 0, 0, .2);
 	font-size: 0.8em;
 	font-weight: 400;
 	color: #FFF;
@@ -273,7 +273,7 @@ ul.style3 .date a:hover
 #header
 {
 	position: relative;
-	padding: 3em 0em;
+	padding: 3em 0;
 }
 
 /*********************************************************************************/
@@ -353,7 +353,7 @@ ul.style3 .date a:hover
 #banner-wrapper
 {
 	overflow: hidden;
-	padding: 10em 0em 5em 0em;
+	padding: 10em 0 5em 0;
 	background: url(images/bg01.jpg) no-repeat center top;
 	background-size: 100% auto;
 }
@@ -384,7 +384,7 @@ ul.style3 .date a:hover
 #page-wrapper
 {
 	overflow: hidden;
-	padding: 5em 0em;
+	padding: 5em 0;
 	background: #FFF;
 }
 
@@ -478,6 +478,12 @@ ul.style3 .date a:hover
 .modal.auth_dialog .input
 {
 	margin-bottom: 24px;
+}
+
+.modal.auth_dialog .err_node
+{
+	color: #f00;
+	padding: 24px 0;
 }
 
 .input

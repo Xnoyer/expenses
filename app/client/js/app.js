@@ -33,7 +33,7 @@ var AuthDialog = require('./auth_dialog.js');
 			auth_dialog.show()
 		});
 		
-		service.sendPost("http://localhost:3000/Service/Auth", [{
+		service.sendPost("/Service/Auth", [{
 			Name: "Content-Type",
 			Value: "application/json"
 		}], JSON.stringify({ Method: "CheckAuth" })).then(function (arg)

@@ -22,4 +22,9 @@ proto.init = function ()
 	}.bind(this));
 };
 
+proto.getContent = function ()
+{
+	return this._rootNode.value;
+};
+
 module.exports = Input;

@@ -41,9 +41,17 @@ app.post('/Service/*', function (req, res) {
 			case "Auth":
 				var method = req.body.Method;
 				var cookies = req.cookies;
-				var ret = authService[method](req.body, cookies);
-				res.cookies = cookies;
-				res.send(ret);
+				try
+				{
+					var ret = authService[method](req.body, cookies);
+					res.cookies = cookies;
+					res.send(ret);
+				}
+				catch (e)
+				{
+					res.status(401);
+					res.send(e.message);
+				}
 				break;
 		}
 	}
