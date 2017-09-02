@@ -36,7 +36,6 @@ proto.init = function ()
 	
 	this._errNode = document.createElement("div");
 	this._errNode.classList.add("err_node");
-	this._errNode.innerHTML = "Sorry, the same login is already used. Please try again";
 	
 	this._loginBtn.addEventListener("Click", this._onRegisterAttempt.bind(this));
 };
@@ -46,23 +45,50 @@ proto.clear = function ()
 	this._nameInputCtrl.clear();
 	this._loginInputCtrl.clear();
 	this._passwordInputCtrl.clear();
+	if (this._errNode.parentNode === this._rootNode)
+		this._rootNode.removeChild(this._errNode);
+};
+
+proto.hide = function ()
+{
+	BaseModal.prototype.hide.apply(this, arguments);
+	this.clear();
 };
 
 proto._onRegisterAttempt = function ()
 {
+	var name = this._nameInputCtrl.getContent(),
+		login = this._loginInputCtrl.getContent(),
+		password = this._passwordInputCtrl.getContent(),
+		errMsg = "";
+	
+	if (!name)
+		errMsg += "Name couldn't be empty.";
+	if (!login)
+		errMsg += "<br/>Login couldn't be empty.";
+	if (!password)
+		errMsg += "<br/>Password couldn't be empty.";
+	if (errMsg)
+	{
+		this._errNode.innerHTML = errMsg;
+		this._rootNode.appendChild(this._errNode);
+		return;
+	}
+	
 	if (this._errNode.parentNode === this._rootNode)
 		this._rootNode.removeChild(this._errNode);
 	Service.AuthService("Register",
 		{
-			Name: this._nameInputCtrl.getContent(),
-			Login: this._loginInputCtrl.getContent(),
-			Password: this._passwordInputCtrl.getContent()
+			Name: name,
+			Login: login,
+			Password: password
 		}).then(function (arg)
 	{
 		this.fireEvent("RegisterSuccess", arg.ResponseJSON);
 	}.bind(this), function ()
 	{
 		this.fireEvent("RegisterFailed");
+		this._errNode.innerHTML = "Sorry, the same login is already used. Please try again";
 		this._rootNode.appendChild(this._errNode);
 	}.bind(this));
 };

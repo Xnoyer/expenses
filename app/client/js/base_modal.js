@@ -19,6 +19,7 @@ proto.init = function ()
 	this._bgNode = document.createElement("div");
 	this._bgNode.classList.add("modal_bg");
 	this._bgNode.appendChild(this._rootNode);
+	this._bgNode.addEventListener("click", this.onBgClick.bind(this));
 };
 
 proto.render = function ()
@@ -37,6 +38,12 @@ proto.show = function ()
 	this._bgNode.style.display = "";
 	this._rootNode.style.width = this._width + "px";
 	this._rootNode.style.height = this._height + "px";
+};
+
+proto.onBgClick = function (e)
+{
+	if (e.srcElement === this._bgNode)
+		this.hide();
 };
 
 module.exports = BaseModal;
