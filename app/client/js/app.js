@@ -1,4 +1,4 @@
-var Service = require('./service.js');
+var service = require('./service.js');
 var AuthHeader = require('./auth_header.js');
 var AuthBanner = require('./auth_banner.js');
 var AuthDialog = require('./auth_dialog.js');
@@ -9,7 +9,6 @@ var ExpensesCtrl = require('./expenses_ctrl.js');
 {
 	document.addEventListener("DOMContentLoaded", init);
 	var app, auth_header, auth_banner, auth_dialog, register_dialog, expenses_ctrl;
-	service = new Service();
 	function init ()
 	{
 		app = new (function ()
@@ -27,12 +26,14 @@ var ExpensesCtrl = require('./expenses_ctrl.js');
 				{
 					auth_header.login(app.state.User);
 					auth_banner.detach();
+					expenses_ctrl.show();
 					expenses_ctrl.refresh();
 				}
 				else
 				{
 					auth_header.logout();
 					auth_banner.render(document.querySelector("#banner-container"));
+					expenses_ctrl.hide();
 				}
 				auth_dialog.render();
 				auth_dialog.hide();
@@ -85,7 +86,7 @@ var ExpensesCtrl = require('./expenses_ctrl.js');
 		{
 			auth_header.logout();
 			auth_banner.render(document.querySelector("#banner-container"));
-			expenses_ctrl.clear();
+			expenses_ctrl.hide();
 		})
 	}
 	
@@ -99,6 +100,7 @@ var ExpensesCtrl = require('./expenses_ctrl.js');
 		auth_header.login(user);
 		auth_banner.detach();
 		expenses_ctrl.refresh();
+		expenses_ctrl.show();
 	}
 	
 	function onRegister (evt)
@@ -111,6 +113,7 @@ var ExpensesCtrl = require('./expenses_ctrl.js');
 		auth_header.login(user);
 		auth_banner.detach();
 		expenses_ctrl.refresh();
+		expenses_ctrl.show();
 	}
 	
 	function onSignInRequested ()

@@ -38,4 +38,4 @@ proto.AuthService = function (method, data)
 	}], JSON.stringify(data));
 };
 
-module.exports = Service;
+module.exports = new Service();

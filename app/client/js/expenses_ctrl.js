@@ -32,6 +32,16 @@ proto.init = function ()
 	this._expensesList.render(this);
 };
 
+proto.hide = function ()
+{
+	this._rootNode.style.display = "none";
+};
+
+proto.show = function ()
+{
+	this._rootNode.style.display = "";
+};
+
 proto.refresh = function (data)
 {
 	data = [
