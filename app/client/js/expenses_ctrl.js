@@ -34,6 +34,7 @@ proto.init = function ()
 
 proto.hide = function ()
 {
+	this.clear();
 	this._rootNode.style.display = "none";
 };
 
@@ -42,17 +43,25 @@ proto.show = function ()
 	this._rootNode.style.display = "";
 };
 
+proto.clear = function()
+{
+	this._expensesList.innerHTML = "";
+};
+
 proto.refresh = function (data)
 {
 	data = [
 		{
+			Id: 0,
 			Description: "Ice-cream",
 			Comment: "Icy ice-cream with strawberry jam",
 			Value: 100,
 			Date: Math.floor(Date.now() / 1000) - 20
 		},
 		{
+			Id: 1,
 			Description: "Sandwhich",
+			Comment: "Tasty sandwich with bacon and tar-tar sauce",
 			Value: 150,
 			Date: Math.floor(Date.now() / 1000)
 		}

@@ -557,8 +557,28 @@ ul.style3 .date a:hover
 .expenses_list .date_group .expense_item .value
 {
 	position: absolute;
-	right: 0;
+	right: 40px;
 	top: 0;
 	height: 100%;
 	font-size: 2.25em;
+	padding-top: 0.2em;
+	margin: auto 1em;
+}
+
+.expenses_list .date_group .expense_item .delete
+{
+	position: absolute;
+	right: 0;
+	top: 0;
+	width: 40px;
+	height: 100%;
+	background-image: url(images/delete_black_24x24.png);
+	opacity: .5;
+	background-position: 50% 50%;
+	background-repeat: no-repeat
+}
+
+.expenses_list .date_group .expense_item .delete:hover
+{
+	opacity: 1;
 }

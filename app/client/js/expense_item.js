@@ -7,6 +7,7 @@ var ExpenseItem = function (settings)
 	this._comment = settings.Comment;
 	this._value = settings.Value;
 	this._time = settings.Time;
+	this._id = settings.Id;
 	BaseControl.apply(this, arguments);
 };
 
@@ -31,9 +32,13 @@ proto.init = function ()
 	this._valueNode.classList.add("value");
 	this._valueNode.innerHTML = this._value;
 	
+	this._deleteNode = document.createElement("div");
+	this._deleteNode.classList.add("delete");
+	
 	this._rootNode.appendChild(this._descriptionNode);
 	this._rootNode.appendChild(this._commentNode);
 	this._rootNode.appendChild(this._valueNode);
+	this._rootNode.appendChild(this._deleteNode);
 };
 
 module.exports = ExpenseItem;
