@@ -15,7 +15,7 @@ proto.sendPost = function (url, headers, body) {
 				if (this.status === 200)
 					resolve({ ResponseText: this.responseText, ResponseJSON: JSON.parse(this.responseText) });
 				else
-					reject({ ResponseText: this.responseText, Status: this.status, Url: url });
+					reject({ ResponseText: this.responseText, ResponseJSON: JSON.parse(this.responseText), Status: this.status, Url: url });
 			}
 		};
 		xhr.open("POST", url, true);
@@ -26,6 +26,16 @@ proto.sendPost = function (url, headers, body) {
 		}
 		xhr.send(body);
 	});
+};
+
+proto.AuthService = function (method, data)
+{
+	data = data || {};
+	data.Method = method;
+	return this.sendPost("/Service/Auth", [{
+		Name: "Content-Type",
+		Value: "application/json"
+	}], JSON.stringify(data));
 };
 
 module.exports = new Service();

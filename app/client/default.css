@@ -321,7 +321,7 @@ ul.style3 .date a:hover
 	text-align: center;
 }
 
-#menu li a, #menu li span
+#menu li a
 {
 	padding: 1em 1.5em;
 	text-decoration: none;
@@ -465,22 +465,26 @@ ul.style3 .date a:hover
 	height: 100%;
 }
 
-.modal.auth_dialog
+.modal.auth_dialog,
+.modal.register_dialog
 {
 	padding: 24px;
 }
 
-.modal.auth_dialog .button
+.modal.auth_dialog .button,
+.modal.register_dialog .button
 {
 	align-self: flex-end;
 }
 
-.modal.auth_dialog .input
+.modal.auth_dialog .input,
+.modal.register_dialog .input
 {
 	margin-bottom: 24px;
 }
 
-.modal.auth_dialog .err_node
+.modal.auth_dialog .err_node,
+.modal.register_dialog .err_node
 {
 	color: #f00;
 	padding: 24px 0;

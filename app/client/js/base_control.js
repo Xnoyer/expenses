@@ -16,9 +16,15 @@ proto.render = function (node)
 	node.appendChild(this._rootNode);
 };
 
+proto.detach = function ()
+{
+	if (this._rootNode.parentNode)
+		this._rootNode.parentNode.removeChild(this._rootNode);
+};
+
 proto.fireEvent = function (eventName, args)
 {
-	var event = new CustomEvent(eventName, args);
+	var event = new CustomEvent(eventName, { detail: args });
 	this._rootNode.dispatchEvent(event);
 };
 

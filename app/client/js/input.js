@@ -22,6 +22,11 @@ proto.init = function ()
 	}.bind(this));
 };
 
+proto.clear = function ()
+{
+	this._rootNode.value = "";
+};
+
 proto.getContent = function ()
 {
 	return this._rootNode.value;

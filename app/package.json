@@ -11,11 +11,11 @@
   "license": "UNLICENSED",
   "repository": "bitbucket:m_stets/expenses",
   "dependencies": {
-    "sqlite3": "^3.1.9",
     "body-parser": "^1.17.2",
     "cookie-parser": "^1.4.3",
     "express": "^4.15.4",
-    "path": "^0.12.7"
+    "path": "^0.12.7",
+    "sqlite3": "^3.1.9"
   },
   "devDependencies": {
     "webpack": "^3.5.5",

@@ -23,11 +23,36 @@ proto.init = function ()
 	this._signUpButton.querySelector("#SignUp").addEventListener("click", this._onSignUp.bind(this));
 	
 	this._signedInButton = document.createElement("li");
-	this._signedInButton.innerHTML = "Authorized as {UserName} <a href='#' title='' id='LogOut'>(Log Out)</a>"
+	this._signedInButton.innerHTML = "Authorized as <span id='username'>UserName</span> <a href='#' title='' id='LogOut'>(Log Out)</a>";
 	this._signedInButton.querySelector("#LogOut").addEventListener("click", this._onLogOut.bind(this));
 	
 	this._rootNode.appendChild(this._signInButton);
 	this._rootNode.appendChild(this._signUpButton);
+};
+
+proto.login = function (user)
+{
+	this._userName = user.Name;
+	if (!this._authorized)
+	{
+		this._rootNode.removeChild(this._signInButton);
+		this._rootNode.removeChild(this._signUpButton);
+		
+		this._rootNode.appendChild(this._signedInButton);
+		this._authorized = true;
+	}
+	this._signedInButton.querySelector("#username").innerHTML = this._userName;
+};
+
+proto.logout = function ()
+{
+	if (!this._authorized)
+		return;
+	this._userName = null;
+	this._rootNode.appendChild(this._signInButton);
+	this._rootNode.appendChild(this._signUpButton);
+	this._rootNode.removeChild(this._signedInButton);
+	this._authorized = false;
 };
 
 proto._onSignIn = function ()
