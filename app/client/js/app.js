@@ -1,14 +1,15 @@
-var service = require('./service.js');
+var Service = require('./service.js');
 var AuthHeader = require('./auth_header.js');
 var AuthBanner = require('./auth_banner.js');
 var AuthDialog = require('./auth_dialog.js');
 var RegisterDialog = require('./register_dialog.js');
+var ExpensesCtrl = require('./expenses_ctrl.js');
 
 (function ()
 {
 	document.addEventListener("DOMContentLoaded", init);
-	var app, auth_header, auth_banner, auth_dialog, register_dialog;
-	
+	var app, auth_header, auth_banner, auth_dialog, register_dialog, expenses_ctrl;
+	service = new Service();
 	function init ()
 	{
 		app = new (function ()
@@ -26,6 +27,7 @@ var RegisterDialog = require('./register_dialog.js');
 				{
 					auth_header.login(app.state.User);
 					auth_banner.detach();
+					expenses_ctrl.refresh();
 				}
 				else
 				{
@@ -36,22 +38,27 @@ var RegisterDialog = require('./register_dialog.js');
 				auth_dialog.hide();
 				register_dialog.render();
 				register_dialog.hide();
+				
+				expenses_ctrl.render(document.querySelector("#page"));
 			}
 		})();
 		
 		auth_header = new AuthHeader();
+		auth_header.addEventListener("SignIn", onSignInRequested);
+		auth_header.addEventListener("SignUp", onSignUpRequested);
+		auth_header.addEventListener("LogOut", onLogOut);
+		
 		auth_banner = new AuthBanner();
+		auth_banner.addEventListener("SignIn", onSignInRequested);
+		auth_banner.addEventListener("SignUp", onSignUpRequested);
+		
 		auth_dialog = new AuthDialog({ Width: 300, Height: 300 });
 		auth_dialog.addEventListener("AuthSuccess", onAuth);
 		
 		register_dialog = new RegisterDialog({ Width: 300, Height: 400 });
 		register_dialog.addEventListener("RegisterSuccess", onRegister);
-		auth_header.addEventListener("SignIn", onSignInRequested);
-		auth_header.addEventListener("SignUp", onSignUpRequested);
-		auth_header.addEventListener("LogOut", onLogOut);
 		
-		auth_banner.addEventListener("SignIn", onSignInRequested);
-		auth_banner.addEventListener("SignUp", onSignUpRequested);
+		expenses_ctrl = new ExpensesCtrl();
 		
 		service.AuthService("CheckAuth").then(function (arg)
 		{
@@ -78,6 +85,7 @@ var RegisterDialog = require('./register_dialog.js');
 		{
 			auth_header.logout();
 			auth_banner.render(document.querySelector("#banner-container"));
+			expenses_ctrl.clear();
 		})
 	}
 	
@@ -90,6 +98,7 @@ var RegisterDialog = require('./register_dialog.js');
 		app.state.User = user;
 		auth_header.login(user);
 		auth_banner.detach();
+		expenses_ctrl.refresh();
 	}
 	
 	function onRegister (evt)
@@ -101,6 +110,7 @@ var RegisterDialog = require('./register_dialog.js');
 		app.state.User = user;
 		auth_header.login(user);
 		auth_banner.detach();
+		expenses_ctrl.refresh();
 	}
 	
 	function onSignInRequested ()

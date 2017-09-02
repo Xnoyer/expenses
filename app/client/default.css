@@ -54,7 +54,8 @@ a:hover
 {
 	overflow: hidden;
 	margin: 0 auto;
-	width: 1200px;
+	max-width: 1200px;
+	padding: 0 24px;
 	display: flex;
 	justify-content: space-between;
 	align-items: stretch;
@@ -497,4 +498,67 @@ ul.style3 .date a:hover
 	font-size: 1em;
 	border: 1px solid #0173B2;
 	outline: none;
+}
+
+.expenses_list
+{
+	margin-top: 24px;
+	display: flex;
+	flex-direction: column;
+}
+
+.expenses_list .date_group
+{
+	position: relative;
+	display: flex;
+	flex-direction: column;
+	padding-left: 84px;
+}
+
+.expenses_list .date_group .date .day
+{
+	margin: 0;
+	padding: 0;
+	display: block;
+	font-size: 1.8em;
+	font-weight: 400;
+	color: #FFFFFF;
+}
+
+.expenses_list .date_group .date
+{
+	position: absolute;
+	left: 0;
+	top: 0;
+	width: 60px;
+	height: 50px;
+	padding: 10px 0 0 0;
+	background: #0173B2;
+	box-shadow: 0 0 0 5px rgba(255, 255, 255, 0.1);
+	line-height: normal;
+	text-align: center;
+	text-transform: uppercase;
+	text-shadow: 0 1px 0 rgba(0, 0, 0, .2);
+	font-size: 0.8em;
+	font-weight: 400;
+	color: #FFF;
+}
+
+.expenses_list .date_group .expense_item
+{
+	display: block;
+	position: relative;
+	margin-bottom: 8px;
+	width: 100%;
+	min-height: 60px;
+	border-bottom: 1px solid #D1CFCE;
+}
+
+.expenses_list .date_group .expense_item .value
+{
+	position: absolute;
+	right: 0;
+	top: 0;
+	height: 100%;
+	font-size: 2.25em;
 }

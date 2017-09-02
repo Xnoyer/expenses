@@ -13,6 +13,8 @@ proto.init = function ()
 
 proto.render = function (node)
 {
+	if (node instanceof BaseControl)
+		node = node._rootNode;
 	node.appendChild(this._rootNode);
 };
 

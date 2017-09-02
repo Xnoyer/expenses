@@ -1,16 +1,16 @@
 var BaseControl = require('./base_control.js');
 var Button = require('./button.js');
 
-var AuthHeader = function ()
+var AuthBanner = function ()
 {
 	BaseControl.apply(this, arguments);
 	this._userName = null;
 	this._authorized = false;
 };
 
-AuthHeader.prototype = Object.create(BaseControl.prototype);
+AuthBanner.prototype = Object.create(BaseControl.prototype);
 
-var proto = AuthHeader.prototype;
+var proto = AuthBanner.prototype;
 
 proto.init = function ()
 {
@@ -50,4 +50,4 @@ proto._onSignUp = function ()
 	this.fireEvent("SignUp");
 };
 
-module.exports = AuthHeader;
+module.exports = AuthBanner;
