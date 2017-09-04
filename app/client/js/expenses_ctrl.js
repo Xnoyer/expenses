@@ -1,7 +1,7 @@
 var BaseControl = require('./base_control.js');
 var ExpensesList = require('./expenses_list.js');
-var DateGroup = require("./date_group.js");
-var ExpenseItem = require("./expense_item.js");
+var Button = require('./button.js');
+var AddExpenseDialog = require('./add_expense_dialog.js');
 
 var ExpensesCtrl = function (settings)
 {
@@ -20,16 +20,33 @@ proto._monthArray = [
 
 proto.init = function ()
 {
+	BaseControl.prototype.init.apply(this, arguments);
 	this._rootNode = document.createElement("div");
-	this._rootNode.classList.add("tbox1");
-	this._rootNode.id = "box1";
+	this._rootNode.classList.add("expenses_ctrl");
 	
 	this._header = document.createElement("h1");
 	this._header.innerHTML = "My expenses list";
 	this._rootNode.appendChild(this._header);
 	
+	this._addButton = new Button({ Text: "+ Add new Expense" });
+	this._addButton.addCssClass("add_button");
+	this._addButton.addEventListener("Click", this._onAddButtonClick.bind(this));
+	this._addButton.render(this);
+	
 	this._expensesList = new ExpensesList();
 	this._expensesList.render(this);
+	this._expensesList.addEventListener("Delete", function (e)
+	{
+		this.fireEvent("RemoveExpense", e.detail);
+	}.bind(this));
+	
+	this._add_dialog = new AddExpenseDialog({ Width: 400, Height: 600 });
+	this._add_dialog.addEventListener("AddExpense", function (e)
+	{
+		this.fireEvent("AddExpense", e.detail);
+	}.bind(this));
+	this._add_dialog.render();
+	this._add_dialog.hide();
 };
 
 proto.hide = function ()
@@ -45,27 +62,26 @@ proto.show = function ()
 
 proto.clear = function()
 {
-	this._expensesList.innerHTML = "";
+	this._expensesList.clear();
+};
+
+proto._onAddButtonClick = function ()
+{
+	this._add_dialog.show();
+};
+
+proto.getList = function ()
+{
+	return this._expensesList;
 };
 
 proto.refresh = function (data)
 {
-	data = [
-		{
-			Id: 0,
-			Description: "Ice-cream",
-			Comment: "Icy ice-cream with strawberry jam",
-			Value: 100,
-			Date: Math.floor(Date.now() / 1000) - 20
-		},
-		{
-			Id: 1,
-			Description: "Sandwhich",
-			Comment: "Tasty sandwich with bacon and tar-tar sauce",
-			Value: 150,
-			Date: Math.floor(Date.now() / 1000)
-		}
-	];
+	if (!data || !data.length)
+	{
+		this._expensesList.showNoData();
+		return;
+	}
 	var lastDay, day, month, date, dateGroup, item;
 	data.sort(function (a, b)
 	{
@@ -75,23 +91,17 @@ proto.refresh = function (data)
 	for (var i = 0; i < data.length; i++)
 	{
 		date = new Date(data[i].Date * 1000);
+		data[i].DateTime = date;
 		day = date.getDate().toString();
 		if (day.length < 2)
 			day = "0" + day;
 		month = this._monthArray[date.getMonth()];
 		if (day !== lastDay)
 		{
-			dateGroup = new DateGroup({ Month: month, Day: day });
-			dateGroup.render(this._expensesList);
+			this._expensesList.dateGroup({ Month: month, Day: day });
 			lastDay = day;
 		}
-		item = new ExpenseItem({
-			Description: data[i].Description,
-			Comment: data[i].Comment,
-			Value: data[i].Value + "$",
-			Time: date.getTime()
-		});
-		item.render(dateGroup);
+		this._expensesList.addItem(data[i]);
 	}
 };
 

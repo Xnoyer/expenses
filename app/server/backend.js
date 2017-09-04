@@ -6,6 +6,7 @@ var webpackDevMiddleware = require('webpack-dev-middleware');
 var webpackHotMiddleware = require('webpack-hot-middleware');
 var config = require("../webpack.config");
 var authService = require("./auth_service.js");
+var expenseService = require("./expense_service.js");
 
 var app = express(),
 	port = 3000;
@@ -32,15 +33,19 @@ app.use(function (req, res, next) {
 app.use(bodyParser.json());
 app.use(cookieParser());
 app.post('/Service/*', function (req, res) {
-	var path = req.path;
+	var path = req.path, method;
 	path = path.split("/");
 	if(path[1] === "Service")
 	{
 		switch (path[2])
 		{
 			case "Auth":
-				var method = req.body.Method;
+				method = req.body.Method;
 				authService[method](req, res);
+				break;
+			case "Expense":
+				method = req.body.Method;
+				expenseService[method](req, res);
 				break;
 		}
 	}

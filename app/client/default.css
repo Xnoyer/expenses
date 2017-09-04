@@ -20,34 +20,14 @@ h1, h2, h3
 	padding: 0;
 }
 
-p, ol, ul
+.lock
 {
-	margin-top: 0;
-}
-
-ol, ul
-{
-	padding: 0;
-	list-style: none;
-}
-
-p
-{
-	line-height: 180%;
-}
-
-strong
-{
-}
-
-a
-{
-	color: #0000FF;
-}
-
-a:hover
-{
-	text-decoration: none;
+	position: absolute;
+	width: 100%;
+	height: 100%;
+	top: 0;
+	left: 0;
+	background-image: url("images/diagonal.png");
 }
 
 .container
@@ -59,135 +39,12 @@ a:hover
 	display: flex;
 	justify-content: space-between;
 	align-items: stretch;
-}
-
-/*********************************************************************************/
-/* List Styles                                                                   */
-/*********************************************************************************/
-
-ul.style1
-{
-	margin: 0;
-	padding: 2em 0 0 0;
-}
-
-ul.style1 li
-{
-	float: left;
-	display: inline-block;
-	padding: 0 0 0 20px;
-}
-
-ul.style1 li:first-child
-{
-	padding-left: 0;
-}
-
-ul.style3
-{
-	margin: 0;
-	padding: 0;
-	overflow: hidden;
-	list-style: none;
-	color: #6c6c6c
-}
-
-ul.style3 li
-{
-	overflow: hidden;
-	display: block;
-	padding: 0.8em 0 0 0;
-	margin: 0 0 1.3em 0;
-	border-top: 1px solid #D1CFCE;
-}
-
-ul.style3 li:first-child
-{
-	padding-top: 0;
-	border-top: none;
-}
-
-ul.style3 p
-{
-	margin: 0;
-}
-
-ul.style3 a
-{
-	display: block;
-	text-decoration: none;
-	color: #2D2D2D;
-}
-
-ul.style3 a:hover
-{
-	text-decoration: underline;
-}
-
-ul.style3 h3
-{
-	padding: 15px 0 5px 0;
-	text-transform: uppercase;
-	font-size: 1.1em;
-	font-weight: 700;
-	color: #454445;
-}
-
-ul.style3 .first
-{
-	padding-top: 0;
-	background: none;
-}
-
-ul.style3 .date
-{
-	float: left;
 	position: relative;
-	width: 60px;
-	height: 50px;
-	margin: 10px 1.5em 0 0;
-	padding: 10px 0 0 0;
-	background: #0173B2;
-	box-shadow: 0 0 0 5px rgba(255, 255, 255, 0.1);
-	line-height: normal;
-	text-align: center;
-	text-transform: uppercase;
-	text-shadow: 0 1px 0 rgba(0, 0, 0, .2);
-	font-size: 0.8em;
-	font-weight: 400;
-	color: #FFF;
 }
 
-ul.style3 .date:after
+.container.expenses
 {
-	content: '';
-	display: block;
-	position: absolute;
-	left: 0;
-	top: 0;
-	width: 100%;
-	height: 100%;
-	border-radius: 6px;
-}
-
-ul.style3 .date b
-{
-	margin: 0;
-	padding: 0;
-	display: block;
-	font-size: 1.8em;
-	font-weight: 400;
-	color: #FFFFFF;
-}
-
-ul.style3 .date a
-{
-	color: #FFFFFF !important;
-}
-
-ul.style3 .date a:hover
-{
-	text-decoration: none;
+	flex-direction: column;
 }
 
 /*********************************************************************************/
@@ -207,42 +64,55 @@ ul.style3 .date a:hover
 	color: #FFF;
 }
 
-.button:before
-{
-}
-
 /*********************************************************************************/
-/* 4-column                                                                      */
+/* Banner                                                                        */
 /*********************************************************************************/
 
-.box1,
-.box2,
-.box3,
-.box4
+.banner-wrapper
 {
-	width: 235px;
+	overflow: hidden;
+	padding: 10em 0 5em 0;
+	background: url("images/bg01.jpg") no-repeat center top;
+	background-size: 100% auto;
 }
 
-.box1,
-.box2,
-.box3
+/************************************************************************************/
+/*	Own *****************************************************************************/
+/************************************************************************************/
+
+.header
 {
-	float: left;
-	margin-right: 20px;
+	position: relative;
+	flex-direction: row;
+	height: 96px;
 }
 
-.box4
+.header .logo
 {
-	float: right;
+	flex-grow: 1;
+	font-size: 2em;
+	align-self: center;
 }
 
-/*********************************************************************************/
-/* 3-column                                                                      */
-/*********************************************************************************/
+.header .menu
+{
+	align-self: center;
+}
 
-.boxA,
-.boxB,
-.boxC
+.header .auth_header .active
+{
+	text-decoration: underline;
+	cursor: pointer;
+}
+
+.header .auth_header .auth_header_item
+{
+	font-size: 1.2em;
+	display: inline-block;
+	margin-left: 48px;
+}
+
+.box
 {
 	flex: 1;
 	background: #FFF;
@@ -251,197 +121,6 @@ ul.style3 .date a:hover
 	align-content: center;
 	margin: 0 24px;
 }
-
-/*********************************************************************************/
-/* 2-column                                                                      */
-/*********************************************************************************/
-
-.tbox1,
-.tbox2
-{
-	width: 575px;
-	flex: 1;
-}
-
-/*********************************************************************************/
-/* Header                                                                        */
-/*********************************************************************************/
-
-#header-wrapper
-{
-}
-
-#header
-{
-	position: relative;
-	padding: 3em 0;
-}
-
-/*********************************************************************************/
-/* Logo                                                                          */
-/*********************************************************************************/
-
-#logo
-{
-	position: absolute;
-	top: 1em;
-	left: 0;
-}
-
-#logo h1
-{
-
-}
-
-#logo a
-{
-	text-decoration: none;
-	color: #0173B2;
-}
-
-/*********************************************************************************/
-/* Menu                                                                          */
-/*********************************************************************************/
-
-#menu
-{
-	position: absolute;
-	top: 2em;
-	right: 0;
-}
-
-#menu ul
-{
-	display: inline-block;
-}
-
-#menu li
-{
-	display: block;
-	float: left;
-	text-align: center;
-}
-
-#menu li a
-{
-	padding: 1em 1.5em;
-	text-decoration: none;
-	font-weight: 400;
-	color: rgba(0, 0, 0, .8);
-}
-
-#menu li:hover a, #menu li.active a, #menu li.active span
-{
-}
-
-#menu a:hover
-{
-	text-decoration: underline;
-}
-
-#menu .current_page_item a
-{
-}
-
-#menu .icon
-{
-}
-
-/*********************************************************************************/
-/* Banner                                                                        */
-/*********************************************************************************/
-
-#banner-wrapper
-{
-	overflow: hidden;
-	padding: 10em 0 5em 0;
-	background: url(images/bg01.jpg) no-repeat center top;
-	background-size: 100% auto;
-}
-
-#banner .title
-{
-	margin-bottom: 3em;
-	text-align: center;
-}
-
-#banner h3
-{
-	margin-bottom: 1em;
-	font-size: 1.4em;
-	font-weight: 600;
-	color: rgba(0, 0, 0, .8);
-}
-
-#banner .button
-{
-	margin-top: 1em;
-}
-
-/*********************************************************************************/
-/* Page                                                                          */
-/*********************************************************************************/
-
-#page-wrapper
-{
-	overflow: hidden;
-	padding: 5em 0;
-	background: #FFF;
-}
-
-#page
-{
-}
-
-#page .title
-{
-	margin-bottom: 3em;
-	text-align: center;
-}
-
-#page h3
-{
-	font-size: 1.4em;
-	font-weight: 600;
-	color: rgba(0, 0, 0, .8);
-}
-
-.pboxA,
-.pboxB,
-.pboxC
-{
-	width: 384px;
-}
-
-.pboxA,
-.pboxB
-{
-	float: left;
-	margin-right: 24px;
-}
-
-.pboxC
-{
-	float: right;
-}
-
-.expenses_list.style3 li
-{
-	position: relative;
-	margin-left: 80px;
-	overflow: visible;
-}
-
-.expenses_list.style3 .date
-{
-	position: absolute;
-	left: -80px;
-	margin-top: 20px;
-}
-
-/************************************************************************************/
-/*	Own *****************************************************************************/
-/************************************************************************************/
 
 .modal
 {
@@ -466,16 +145,35 @@ ul.style3 .date a:hover
 	height: 100%;
 }
 
-.modal.auth_dialog,
-.modal.register_dialog
+.modal.base_dialog .buttons_node .button
 {
-	padding: 24px;
+	margin-left: 24px;
 }
 
-.modal.auth_dialog .button,
-.modal.register_dialog .button
+.modal.base_dialog .content_node
 {
-	align-self: flex-end;
+	padding: 12px 24px;
+	display: flex;
+	flex-direction: column;
+	flex-grow: 1;
+}
+
+.modal.base_dialog .dialog_header
+{
+	padding: 12px 24px 0;
+	height: 48px;
+	font-size: 1.5em;
+	font-weight: bold;
+	text-align: center;
+	border-bottom: 1px solid #D1CFCE;
+}
+
+.modal.base_dialog .buttons_node
+{
+	padding: 12px 24px;
+	display: flex;
+	flex-direction: row;
+	justify-content: flex-end;
 }
 
 .modal.auth_dialog .input,
@@ -485,7 +183,8 @@ ul.style3 .date a:hover
 }
 
 .modal.auth_dialog .err_node,
-.modal.register_dialog .err_node
+.modal.register_dialog .err_node,
+.modal.add_expense_dialog .err_node
 {
 	color: #f00;
 	padding: 24px 0;
@@ -500,11 +199,32 @@ ul.style3 .date a:hover
 	outline: none;
 }
 
+.expenses_ctrl
+{
+	margin: 5em 0;
+	background: #FFF;
+	position: relative;
+}
+
+.expenses_ctrl .add_button
+{
+	position: absolute;
+	right: 0;
+	top: 0;
+}
+
 .expenses_list
 {
 	margin-top: 24px;
 	display: flex;
 	flex-direction: column;
+}
+
+.expenses_list .no_data
+{
+	height: 96px;
+	font-size: 2.75em;
+	align-self: center;
 }
 
 .expenses_list .date_group
@@ -554,6 +274,13 @@ ul.style3 .date a:hover
 	border-bottom: 1px solid #D1CFCE;
 }
 
+.expenses_list .date_group .expense_item .description
+{
+	font-size: 1.4em;
+	font-weight: 600;
+	color: rgba(0, 0, 0, .8);
+}
+
 .expenses_list .date_group .expense_item .value
 {
 	position: absolute;
@@ -569,9 +296,11 @@ ul.style3 .date a:hover
 {
 	position: absolute;
 	right: 0;
-	top: 0;
+	top: 50%;
+	transform: translatey(-50%);
+	border-radius: 50%;
 	width: 40px;
-	height: 100%;
+	height: 40px;
 	background-image: url(images/delete_black_24x24.png);
 	opacity: .5;
 	background-position: 50% 50%;
@@ -580,5 +309,7 @@ ul.style3 .date a:hover
 
 .expenses_list .date_group .expense_item .delete:hover
 {
+	cursor: pointer;
+	background-color: rgba(0, 0, 0, 0.1);
 	opacity: 1;
 }

@@ -13,6 +13,7 @@ var proto = Label.prototype;
 
 proto.init = function ()
 {
+	BaseControl.prototype.init.apply(this, arguments);
 	this._rootNode = document.createElement("span");
 	this._rootNode.classList.add("label");
 	this._rootNode.innerHTML = this._content;

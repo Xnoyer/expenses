@@ -88,6 +88,21 @@ function DBTools ()
 		});
 	};
 	
+	this.getUserBySessionId = function (sessionId, callback)
+	{
+		if (!this._isOpened())
+			this._openDb();
+		this._db.get("SELECT users.key, login, role, sessions.id FROM users, sessions WHERE sessions.user = users.key AND sessions.id = ? AND expiry_date > strftime('%s', 'now');", [sessionId], function (err, row)
+		{
+			if (err)
+			{
+				console.error("Error querying database", err);
+				throw new Error(err);
+			}
+			callback(null, row);
+		});
+	};
+	
 	this.tryCreateUser = function (name, login, passwordHash, roleKey, callback)
 	{
 		if (!this._isOpened())
@@ -127,6 +142,55 @@ function DBTools ()
 			}
 		});
 	};
+	
+	//--Expenses
+	
+	this.addExpense = function (userId, data, callback)
+	{
+		var date = data.Date;
+		if (!this._isOpened())
+			this._openDb();
+		this._db.run("INSERT INTO expenses (user, datetime, data) VALUES (?, ?, ?);", [userId, date, JSON.stringify(data)], function (err)
+		{
+			if (err)
+			{
+				console.error("Error querying database", err);
+				throw new Error(err);
+			}
+			callback(null, this.lastID);
+		});
+	};
+	
+	this.removeExpense = function (userId, key, callback)
+	{
+		if (!this._isOpened())
+			this._openDb();
+		this._db.run("DELETE FROM expenses WHERE user = ? AND key = ?;", [userId, key], function (err)
+		{
+			if (err)
+			{
+				console.error("Error querying database", err);
+				throw new Error(err);
+			}
+			callback(null);
+		});
+	};
+	
+	this.getExpenses = function (userId, callback)
+	{
+		if (!this._isOpened())
+			this._openDb();
+		var self = this;
+		this._db.all("SELECT key, datetime, data FROM expenses WHERE user = ?;", [userId], function (err, row)
+		{
+			if (err)
+			{
+				console.error("Error querying database", err);
+				throw new Error(err);
+			}
+			callback(null, row);
+		});
+	}
 }
 
 module.exports = new DBTools();

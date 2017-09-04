@@ -14,6 +14,7 @@ var proto = DateGroup.prototype;
 
 proto.init = function ()
 {
+	BaseControl.prototype.init.apply(this, arguments);
 	this._rootNode = document.createElement("div");
 	this._rootNode.classList.add("date_group");
 	

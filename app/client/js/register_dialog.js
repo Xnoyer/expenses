@@ -1,43 +1,41 @@
-var BaseModal = require('./base_modal.js');
+var BaseDialog = require('./base_dialog.js');
 var Input = require('./input.js');
 var Button = require('./button.js');
 var Label = require('./label.js');
 var Service = require('./service.js');
 
-RegisterDialog = function ()
+RegisterDialog = function (settings)
 {
-	BaseModal.apply(this, arguments);
+	settings = settings || {};
+	settings.Header = "Sign Up";
+	settings.OkButton = "Sign Up";
+	BaseDialog.apply(this, [settings]);
 };
 
-RegisterDialog.prototype = Object.create(BaseModal.prototype);
+RegisterDialog.prototype = Object.create(BaseDialog.prototype);
 
 var proto = RegisterDialog.prototype;
 
 proto.init = function ()
 {
-	BaseModal.prototype.init.apply(this, arguments);
+	BaseDialog.prototype.init.apply(this, arguments);
 	this._rootNode.classList.add("register_dialog");
 	
 	this._nameInputCtrl = new Input();
 	this._loginInputCtrl = new Input();
-	this._passwordInputCtrl = new Input({ IsPassword: true });
+	this._passwordInputCtrl = new Input({ Type: "password" });
 	
-	this._loginBtn = new Button({ Text: "Sign Up" });
+	new Label({ Content: "Full Name" }).render(this._contentNode);
+	this._nameInputCtrl.render(this._contentNode);
 	
-	new Label({ Content: "Full Name" }).render(this._rootNode);
-	this._nameInputCtrl.render(this._rootNode);
+	new Label({ Content: "Login" }).render(this._contentNode);
+	this._loginInputCtrl.render(this._contentNode);
 	
-	new Label({ Content: "Login" }).render(this._rootNode);
-	this._loginInputCtrl.render(this._rootNode);
-	
-	new Label({ Content: "Password" }).render(this._rootNode);
-	this._passwordInputCtrl.render(this._rootNode);
-	this._loginBtn.render(this._rootNode);
+	new Label({ Content: "Password" }).render(this._contentNode);
+	this._passwordInputCtrl.render(this._contentNode);
 	
 	this._errNode = document.createElement("div");
 	this._errNode.classList.add("err_node");
-	
-	this._loginBtn.addEventListener("Click", this._onRegisterAttempt.bind(this));
 };
 
 proto.clear = function ()
@@ -45,17 +43,17 @@ proto.clear = function ()
 	this._nameInputCtrl.clear();
 	this._loginInputCtrl.clear();
 	this._passwordInputCtrl.clear();
-	if (this._errNode.parentNode === this._rootNode)
-		this._rootNode.removeChild(this._errNode);
+	if (this._errNode.parentNode === this._contentNode)
+		this._contentNode.removeChild(this._errNode);
 };
 
 proto.hide = function ()
 {
-	BaseModal.prototype.hide.apply(this, arguments);
+	BaseDialog.prototype.hide.apply(this, arguments);
 	this.clear();
 };
 
-proto._onRegisterAttempt = function ()
+proto.onOk = function ()
 {
 	var name = this._nameInputCtrl.getContent(),
 		login = this._loginInputCtrl.getContent(),
@@ -71,12 +69,12 @@ proto._onRegisterAttempt = function ()
 	if (errMsg)
 	{
 		this._errNode.innerHTML = errMsg;
-		this._rootNode.appendChild(this._errNode);
+		this._contentNode.appendChild(this._errNode);
 		return;
 	}
 	
-	if (this._errNode.parentNode === this._rootNode)
-		this._rootNode.removeChild(this._errNode);
+	if (this._errNode.parentNode === this._contentNode)
+		this._contentNode.removeChild(this._errNode);
 	Service.AuthService("Register",
 		{
 			Name: name,
@@ -89,7 +87,7 @@ proto._onRegisterAttempt = function ()
 	{
 		this.fireEvent("RegisterFailed");
 		this._errNode.innerHTML = "Sorry, the same login is already used. Please try again";
-		this._rootNode.appendChild(this._errNode);
+		this._contentNode.appendChild(this._errNode);
 	}.bind(this));
 };
 

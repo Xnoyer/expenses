@@ -9,7 +9,7 @@ db.serialize(function () {
 	
 	db.run("CREATE TABLE users (key INTEGER PRIMARY KEY AUTOINCREMENT, name TEXT, login TEXT, password TEXT, role INTEGER);");
 	db.run("CREATE TABLE roles (key INTEGER PRIMARY KEY AUTOINCREMENT, name TEXT);");
-	db.run("CREATE TABLE expenses (key INTEGER PRIMARY KEY AUTOINCREMENT, user INTEGER, datetime INTEGER);");
+	db.run("CREATE TABLE expenses (key INTEGER PRIMARY KEY AUTOINCREMENT, user INTEGER, datetime INTEGER, data TEXT);");
 	db.run("CREATE TABLE sessions (key INTEGER PRIMARY KEY AUTOINCREMENT, user INTEGER, id TEXT, expiry_date INTEGER, created_date INTEGER DEFAULT (strftime('%s', 'now')));");
 	
 	db.run("INSERT INTO roles (name) VALUES ('basic_user');");

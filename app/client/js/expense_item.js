@@ -17,6 +17,7 @@ var proto = ExpenseItem.prototype;
 
 proto.init = function ()
 {
+	BaseControl.prototype.init.apply(this, arguments);
 	this._rootNode = document.createElement("div");
 	this._rootNode.classList.add("expense_item");
 	
@@ -34,6 +35,11 @@ proto.init = function ()
 	
 	this._deleteNode = document.createElement("div");
 	this._deleteNode.classList.add("delete");
+	this._deleteNode.addEventListener("click", function ()
+	{
+		this.lock();
+		this.fireEvent("Delete", { Id: this._id });
+	}.bind(this));
 	
 	this._rootNode.appendChild(this._descriptionNode);
 	this._rootNode.appendChild(this._commentNode);

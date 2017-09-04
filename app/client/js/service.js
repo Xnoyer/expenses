@@ -38,4 +38,14 @@ proto.AuthService = function (method, data)
 	}], JSON.stringify(data));
 };
 
+proto.ExpenseService = function (method, data)
+{
+	data = data || {};
+	data.Method = method;
+	return this.sendPost("/Service/Expense", [{
+		Name: "Content-Type",
+		Value: "application/json"
+	}], JSON.stringify(data));
+};
+
 module.exports = new Service();

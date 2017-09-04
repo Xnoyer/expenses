@@ -13,6 +13,7 @@ var proto = Button.prototype;
 
 proto.init = function ()
 {
+	BaseControl.prototype.init.apply(this, arguments);
 	this._rootNode = document.createElement("a");
 	this._rootNode.innerHTML = this._content;
 	this._rootNode.href = "#";

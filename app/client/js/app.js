@@ -21,13 +21,12 @@ var ExpensesCtrl = require('./expenses_ctrl.js');
 			
 			this.drawInterface = function ()
 			{
-				auth_header.render(document.querySelector("#menu"));
+				auth_header.render(document.querySelector(".menu"));
 				if (app.state.Authorized)
 				{
 					auth_header.login(app.state.User);
 					auth_banner.detach();
 					expenses_ctrl.show();
-					expenses_ctrl.refresh();
 				}
 				else
 				{
@@ -53,13 +52,15 @@ var ExpensesCtrl = require('./expenses_ctrl.js');
 		auth_banner.addEventListener("SignIn", onSignInRequested);
 		auth_banner.addEventListener("SignUp", onSignUpRequested);
 		
-		auth_dialog = new AuthDialog({ Width: 300, Height: 300 });
+		auth_dialog = new AuthDialog({ Width: 360, Height: 450 });
 		auth_dialog.addEventListener("AuthSuccess", onAuth);
 		
-		register_dialog = new RegisterDialog({ Width: 300, Height: 400 });
+		register_dialog = new RegisterDialog({ Width: 360, Height: 550 });
 		register_dialog.addEventListener("RegisterSuccess", onRegister);
 		
 		expenses_ctrl = new ExpensesCtrl();
+		expenses_ctrl.addEventListener("AddExpense", onAddExpense);
+		expenses_ctrl.addEventListener("RemoveExpense", onRemoveExpense);
 		
 		service.AuthService("CheckAuth").then(function (arg)
 		{
@@ -67,6 +68,7 @@ var ExpensesCtrl = require('./expenses_ctrl.js');
 			{
 				app.state.Authorized = true;
 				app.state.User = arg.ResponseJSON;
+				getExpenses();
 			}
 			app.drawInterface();
 		}, function (arg)
@@ -87,7 +89,7 @@ var ExpensesCtrl = require('./expenses_ctrl.js');
 			auth_header.logout();
 			auth_banner.render(document.querySelector("#banner-container"));
 			expenses_ctrl.hide();
-		})
+		});
 	}
 	
 	function onAuth (evt)
@@ -124,5 +126,49 @@ var ExpensesCtrl = require('./expenses_ctrl.js');
 	function onSignUpRequested ()
 	{
 		register_dialog.show();
+	}
+	
+	function getExpenses ()
+	{
+		service.ExpenseService("Get").then(function (arg)
+		{
+			app.state.Expenses = arg.ResponseJSON;
+			expenses_ctrl.refresh(app.state.Expenses);
+		});
+	}
+	
+	function onAddExpense (e)
+	{
+		var data = e.detail;
+		expenses_ctrl.lock();
+		service.ExpenseService("Add", data).then(function (arg)
+		{
+			data.Id = arg.ResponseJSON.Id;
+			app.state.Expenses.push(data);
+			expenses_ctrl.clear();
+			expenses_ctrl.refresh(app.state.Expenses);
+			expenses_ctrl.unlock();
+		});
+	}
+	
+	function onRemoveExpense (e)
+	{
+		service.ExpenseService("Remove", e.detail).then(function (arg)
+		{
+			var index = -1;
+			for (var i = 0; i < app.state.Expenses.length; i++)
+			{
+				if (app.state.Expenses[i].Id === e.detail.Id)
+				{
+					index = i;
+					break;
+				}
+			}
+			if (i > -1)
+				app.state.Expenses.splice(i, 1);
+			else
+				throw new Error("Expense not found");
+			expenses_ctrl.getList().removeItem(e.detail.Id);
+		});
 	}
 })();

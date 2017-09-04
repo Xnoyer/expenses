@@ -8,7 +8,29 @@ proto = BaseControl.prototype;
 
 proto.init = function ()
 {
+	this._lockNode = document.createElement("div");
+	this._lockNode.classList.add("lock");
+};
 
+proto.lock = function ()
+{
+	this._rootNode.appendChild(this._lockNode);
+};
+
+proto.unlock = function ()
+{
+	if (this._lockNode.parentNode === this._rootNode)
+		this._rootNode.removeChild(this._lockNode);
+};
+
+proto.addCssClass = function (className)
+{
+	this._rootNode.classList.add(className);
+};
+
+proto.removeCssClass = function (className)
+{
+	this._rootNode.classList.remove(className);
 };
 
 proto.render = function (node)
