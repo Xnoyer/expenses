@@ -1,7 +1,7 @@
-var Static = require('./static.js');
-var BaseControl = require('./base_control.js');
+var Static = require('../static.js');
+var BaseControl = require('../base_controls/base_control.js');
 var ExpensesList = require('./expenses_list.js');
-var Button = require('./button.js');
+var Button = require('../base_controls/button.js');
 var AddExpenseDialog = require('./add_expense_dialog.js');
 var FilterExpensesDialog = require('./filter_expenses_dialog.js');
 

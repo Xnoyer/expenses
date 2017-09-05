@@ -1,7 +1,7 @@
-var BaseControl = require('./base_control.js');
+var BaseControl = require('../base_controls/base_control.js');
 var DateGroup = require("./date_group.js");
 var ExpenseItem = require("./expense_item.js");
-var Label = require("./label.js");
+var Label = require("../base_controls/label.js");
 
 var ExpensesList = function (settings)
 {
@@ -33,6 +33,7 @@ proto.clear = function ()
 		this._items[keys[i]].detach();
 		delete this._items[keys[i]];
 	}
+	this._rootNode.innerHTML = "";
 };
 
 proto.showNoData = function ()

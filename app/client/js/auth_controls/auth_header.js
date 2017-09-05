@@ -1,4 +1,4 @@
-var BaseControl = require('./base_control.js');
+var BaseControl = require('../base_controls/base_control.js');
 
 var AuthHeader = function ()
 {

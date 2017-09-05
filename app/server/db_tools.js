@@ -198,7 +198,39 @@ function DBTools ()
 			}
 			callback(null, row);
 		});
-	}
+	};
+	
+	this.getUsers = function (callback)
+	{
+		if (!this._isOpened())
+			this._openDb();
+		var self = this;
+		
+		this._db.all("SELECT key, name, login, role FROM users;", function (err, row)
+		{
+			if (err)
+			{
+				console.error("Error querying database", err);
+				throw new Error(err);
+			}
+			callback(null, row);
+		});
+	};
+	
+	this.removeUser = function (key, callback)
+	{
+		if (!this._isOpened())
+			this._openDb();
+		this._db.run("DELETE FROM users WHERE key = ?;", [key], function (err)
+		{
+			if (err)
+			{
+				console.error("Error querying database", err);
+				throw new Error(err);
+			}
+			callback(null);
+		});
+	};
 }
 
 module.exports = new DBTools();

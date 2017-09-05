@@ -1,5 +1,5 @@
-var BaseControl = require('./base_control.js');
-var Static = require('./static.js');
+var BaseControl = require('../base_controls/base_control.js');
+var Static = require('../static.js');
 
 var ExpenseItem = function (settings)
 {

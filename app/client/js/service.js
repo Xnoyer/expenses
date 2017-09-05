@@ -48,4 +48,14 @@ proto.ExpenseService = function (method, data)
 	}], JSON.stringify(data));
 };
 
+proto.AdminService = function (method, data)
+{
+	data = data || {};
+	data.Method = method;
+	return this.sendPost("/Service/Admin", [{
+		Name: "Content-Type",
+		Value: "application/json"
+	}], JSON.stringify(data));
+};
+
 module.exports = new Service();

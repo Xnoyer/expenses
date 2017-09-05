@@ -1,7 +1,7 @@
-var Static = require('./static.js');
-var BaseDialog = require('./base_dialog.js');
-var Input = require('./input.js');
-var Label = require('./label.js');
+var Static = require('../static.js');
+var BaseDialog = require('../base_controls/base_dialog.js');
+var Input = require('../base_controls/input.js');
+var Label = require('../base_controls/label.js');
 
 FilterExpensesDialog = function (settings)
 {

@@ -1,5 +1,5 @@
-var BaseControl = require('./base_control.js');
-var Button = require('./button.js');
+var BaseControl = require('../base_controls/base_control.js');
+var Button = require('../base_controls/button.js');
 
 var AuthBanner = function ()
 {

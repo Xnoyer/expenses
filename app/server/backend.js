@@ -7,6 +7,7 @@ var webpackHotMiddleware = require('webpack-hot-middleware');
 var config = require("../webpack.config");
 var authService = require("./auth_service.js");
 var expenseService = require("./expense_service.js");
+var adminService = require("./admin_service.js");
 
 var app = express(),
 	port = 3000;
@@ -47,13 +48,17 @@ app.post('/Service/*', function (req, res) {
 				method = req.body.Method;
 				expenseService[method](req, res);
 				break;
+			case "Admin":
+				method = req.body.Method;
+				adminService[method](req, res);
+				break;
 		}
 	}
 });
 
 //SERVER
 
-app.listen(port, '192.168.0.126', function ()
+app.listen(port, function ()
 {
 	console.log('Example app listening on port 3000!');
 });

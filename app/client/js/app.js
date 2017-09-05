@@ -1,14 +1,16 @@
 var service = require('./service.js');
-var AuthHeader = require('./auth_header.js');
-var AuthBanner = require('./auth_banner.js');
-var AuthDialog = require('./auth_dialog.js');
-var RegisterDialog = require('./register_dialog.js');
-var ExpensesCtrl = require('./expenses_ctrl.js');
+var AuthHeader = require('./auth_controls/auth_header.js');
+var AuthBanner = require('./auth_controls/auth_banner.js');
+var AuthDialog = require('./auth_controls/auth_dialog.js');
+var RegisterDialog = require('./auth_controls/register_dialog.js');
+var ExpensesCtrl = require('./expense_controls/expenses_ctrl.js');
+var AdminCtrl = require('./admin_controls/admin_ctrl.js');
 
 (function ()
 {
 	document.addEventListener("DOMContentLoaded", init);
-	var app, auth_header, auth_banner, auth_dialog, register_dialog, expenses_ctrl;
+	var app, auth_header, auth_banner, auth_dialog, register_dialog, expenses_ctrl, admin_ctrl;
+	
 	function init ()
 	{
 		app = new (function ()
@@ -29,6 +31,11 @@ var ExpensesCtrl = require('./expenses_ctrl.js');
 					auth_header.login(app.state.User);
 					auth_banner.detach();
 					expenses_ctrl.show();
+					if (app.state.User.Role > 2)
+					{
+						//Admin
+						showAdminCtrl();
+					}
 				}
 				else
 				{
@@ -65,6 +72,9 @@ var ExpensesCtrl = require('./expenses_ctrl.js');
 		expenses_ctrl.addEventListener("RemoveExpense", onRemoveExpense);
 		expenses_ctrl.addEventListener("FilterExpenses", onFilterExpenses);
 		
+		admin_ctrl = new AdminCtrl();
+		admin_ctrl.addEventListener("DeleteUser", onDeleteUser);
+		
 		service.AuthService("CheckAuth").then(function (arg)
 		{
 			if (arg && arg.ResponseJSON)
@@ -92,6 +102,7 @@ var ExpensesCtrl = require('./expenses_ctrl.js');
 			auth_header.logout();
 			auth_banner.render(document.querySelector("#banner-container"));
 			expenses_ctrl.hide();
+			hideAdminCtrl();
 		});
 	}
 	
@@ -106,6 +117,11 @@ var ExpensesCtrl = require('./expenses_ctrl.js');
 		auth_banner.detach();
 		expenses_ctrl.show();
 		getExpenses();
+		if (app.state.User.Role > 2)
+		{
+			//Admin
+			showAdminCtrl();
+		}
 	}
 	
 	function onRegister (evt)
@@ -184,5 +200,43 @@ var ExpensesCtrl = require('./expenses_ctrl.js');
 				throw new Error("Expense not found");
 			expenses_ctrl.getList().removeItem(e.detail.Id);
 		});
+	}
+	
+	function showAdminCtrl ()
+	{
+		app.admin_node = document.createElement("div");
+		app.admin_node.classList.add("admin_node");
+		app.admin_node.classList.add("container");
+		document.body.appendChild(app.admin_node);
+		admin_ctrl.render(app.admin_node);
+		getUsers();
+	}
+	
+	function getUsers ()
+	{
+		service.AdminService("GetUsers").then(function (arg)
+		{
+			admin_ctrl.update(arg.ResponseJSON);
+		});
+	}
+	
+	function onDeleteUser (e)
+	{
+		if (!app.state.Authorized || app.state.User.Role < 3)
+			return;
+		service.AdminService("RemoveUser", { Key: e.detail.Key }).then(function (arg)
+		{
+			getUsers();
+		});
+	}
+	
+	function hideAdminCtrl ()
+	{
+		if (app.admin_node && app.admin_node.parentNode)
+		{
+			admin_ctrl.detach();
+			app.admin_node.parentNode.removeChild(app.admin_node);
+			delete app.admin_node;
+		}
 	}
 })();
