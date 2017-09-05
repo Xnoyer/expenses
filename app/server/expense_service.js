@@ -20,6 +20,7 @@ module.exports =
 						return;
 					}
 					var data = req.body;
+					delete data.Method;
 					db_tools.addExpense(row.key, data, function (err, key)
 					{
 						if (err)
@@ -52,7 +53,8 @@ module.exports =
 						res.status(401).send({ Result: "Unauthorized" });
 						return;
 					}
-					db_tools.getExpenses(row.key, function (err, rows)
+					var filter = req.body;
+					db_tools.getExpenses(row.key, filter, function (err, rows)
 					{
 						if (err)
 						{

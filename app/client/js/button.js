@@ -24,4 +24,10 @@ proto.init = function ()
 	}.bind(this));
 };
 
+proto.setText = function (text)
+{
+	this._content = text;
+	this._rootNode.innerHTML = this._content;
+};
+
 module.exports = Button;

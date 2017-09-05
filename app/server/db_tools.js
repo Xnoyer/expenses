@@ -176,12 +176,20 @@ function DBTools ()
 		});
 	};
 	
-	this.getExpenses = function (userId, callback)
+	this.getExpenses = function (userId, filter, callback)
 	{
 		if (!this._isOpened())
 			this._openDb();
 		var self = this;
-		this._db.all("SELECT key, datetime, data FROM expenses WHERE user = ?;", [userId], function (err, row)
+		
+		var statement;
+		
+		if (!filter || !filter.StartDate || !filter.EndDate)
+			statement = this._db.prepare("SELECT key, datetime, data FROM expenses WHERE user = ?;", [userId]);
+		else
+			statement = this._db.prepare("SELECT key, datetime, data FROM expenses WHERE user = ? AND datetime >= ? AND datetime <= ?;", [userId, filter.StartDate, filter.EndDate]);
+		
+		statement.all(function (err, row)
 		{
 			if (err)
 			{

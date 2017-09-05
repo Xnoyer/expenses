@@ -1,4 +1,5 @@
 var BaseControl = require('./base_control.js');
+var Static = require('./static.js');
 
 var ExpenseItem = function (settings)
 {
@@ -23,7 +24,7 @@ proto.init = function ()
 	
 	this._descriptionNode = document.createElement("h3");
 	this._descriptionNode.classList.add("description");
-	this._descriptionNode.innerHTML = this._description;
+	this._descriptionNode.innerHTML = this._description + " (" + Static.timestampToTime(this._time) + ")";
 	
 	this._commentNode = document.createElement("span");
 	this._commentNode.classList.add("comment");

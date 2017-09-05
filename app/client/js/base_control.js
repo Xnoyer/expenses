@@ -23,6 +23,16 @@ proto.unlock = function ()
 		this._rootNode.removeChild(this._lockNode);
 };
 
+proto.hide = function ()
+{
+	this._rootNode.style.display = "none";
+};
+
+proto.show = function ()
+{
+	this._rootNode.style.display = "";
+};
+
 proto.addCssClass = function (className)
 {
 	this._rootNode.classList.add(className);

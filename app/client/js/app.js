@@ -16,7 +16,9 @@ var ExpensesCtrl = require('./expenses_ctrl.js');
 			this.state =
 				{
 					Authorized: false,
-					User: null
+					User: null,
+					Expenses: [],
+					Filter: null
 				};
 			
 			this.drawInterface = function ()
@@ -61,6 +63,7 @@ var ExpensesCtrl = require('./expenses_ctrl.js');
 		expenses_ctrl = new ExpensesCtrl();
 		expenses_ctrl.addEventListener("AddExpense", onAddExpense);
 		expenses_ctrl.addEventListener("RemoveExpense", onRemoveExpense);
+		expenses_ctrl.addEventListener("FilterExpenses", onFilterExpenses);
 		
 		service.AuthService("CheckAuth").then(function (arg)
 		{
@@ -101,8 +104,8 @@ var ExpensesCtrl = require('./expenses_ctrl.js');
 		app.state.User = user;
 		auth_header.login(user);
 		auth_banner.detach();
-		expenses_ctrl.refresh();
 		expenses_ctrl.show();
+		getExpenses();
 	}
 	
 	function onRegister (evt)
@@ -130,9 +133,10 @@ var ExpensesCtrl = require('./expenses_ctrl.js');
 	
 	function getExpenses ()
 	{
-		service.ExpenseService("Get").then(function (arg)
+		service.ExpenseService("Get", app.state.Filter).then(function (arg)
 		{
 			app.state.Expenses = arg.ResponseJSON;
+			expenses_ctrl.clear();
 			expenses_ctrl.refresh(app.state.Expenses);
 		});
 	}
@@ -149,6 +153,16 @@ var ExpensesCtrl = require('./expenses_ctrl.js');
 			expenses_ctrl.refresh(app.state.Expenses);
 			expenses_ctrl.unlock();
 		});
+	}
+	
+	function onFilterExpenses (e)
+	{
+		var filterData = e.detail;
+		if (filterData)
+			app.state.Filter = filterData;
+		else
+			app.state.Filter = null;
+		getExpenses();
 	}
 	
 	function onRemoveExpense (e)

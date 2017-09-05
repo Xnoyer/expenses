@@ -53,6 +53,7 @@ app.post('/Service/*', function (req, res) {
 
 //SERVER
 
-app.listen(port, function () {
+app.listen(port, '192.168.0.126', function ()
+{
 	console.log('Example app listening on port 3000!');
 });

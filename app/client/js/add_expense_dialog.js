@@ -1,6 +1,6 @@
+var Static = require('./static.js');
 var BaseDialog = require('./base_dialog.js');
 var Input = require('./input.js');
-var Button = require('./button.js');
 var Label = require('./label.js');
 
 AddExpenseDialog = function (settings)
@@ -14,36 +14,6 @@ AddExpenseDialog = function (settings)
 AddExpenseDialog.prototype = Object.create(BaseDialog.prototype);
 
 var proto = AddExpenseDialog.prototype;
-
-proto._dateToString = function (date)
-{
-	var ret = "";
-	ret += date.getFullYear();
-	var month = (date.getMonth() + 1).toString();
-	if (month.length === 1)
-		month = "0" + month;
-	ret += "-" + month;
-	var day = date.getDate().toString();
-	if (day.length === 1)
-		day = "0" + day;
-	ret += "-" + day;
-	
-	ret += "T";
-	
-	var hour = date.getHours().toString();
-	if (hour.length === 1)
-		hour = "0" + hour;
-	ret += hour;
-	var min = date.getMinutes().toString();
-	if (min.length === 1)
-		min = "0" + min;
-	ret += ":" + min;
-	var sec = date.getSeconds().toString();
-	if (sec.length === 1)
-		sec = "0" + sec;
-	ret += ":" + sec;
-	return ret;
-};
 
 proto.init = function ()
 {
@@ -85,7 +55,7 @@ proto.show = function ()
 {
 	BaseDialog.prototype.show.apply(this, arguments);
 	this._valueInputCtrl.setParams({ min: .01, value: 1, required: true });
-	this._dateInputCtrl.setParams({ value: this._dateToString(new Date()), required: true });
+	this._dateInputCtrl.setParams({ value: Static.dateToString(new Date()), required: true });
 };
 
 proto.hide = function ()
