@@ -3,6 +3,7 @@ var BaseControl = require('../base_controls/base_control.js');
 var ExpensesList = require('./expenses_list.js');
 var Button = require('../base_controls/button.js');
 var AddExpenseDialog = require('./add_expense_dialog.js');
+var EditExpenseDialog = require('./edit_expense_dialog.js');
 var FilterExpensesDialog = require('./filter_expenses_dialog.js');
 
 var ExpensesCtrl = function (settings)
@@ -53,18 +54,22 @@ proto.init = function ()
 	
 	this._expensesList = new ExpensesList();
 	this._expensesList.render(this);
-	this._expensesList.addEventListener("Delete", function (e)
+	this.pipeEvent(this._expensesList, "Delete", "RemoveExpense");
+	this._expensesList.addEventListener("Edit", function (e)
 	{
-		this.fireEvent("RemoveExpense", e.detail);
+		this._editDialog.show();
+		this._editDialog.update(this._dataById[e.detail.Id]);
 	}.bind(this));
 	
 	this._addDialog = new AddExpenseDialog({ Width: 400, Height: 600 });
-	this._addDialog.addEventListener("AddExpense", function (e)
-	{
-		this.fireEvent("AddExpense", e.detail);
-	}.bind(this));
+	this.pipeEvent(this._addDialog, "AddExpense");
 	this._addDialog.render();
 	this._addDialog.hide();
+	
+	this._editDialog = new EditExpenseDialog({ Width: 400, Height: 600 });
+	this.pipeEvent(this._editDialog, "EditExpense");
+	this._editDialog.render();
+	this._editDialog.hide();
 	
 	this._filterDialog = new FilterExpensesDialog({ Width: 400, Height: 400 });
 	this._filterDialog.addEventListener("FilterExpenses", function (e)
@@ -121,12 +126,13 @@ proto.getList = function ()
 
 proto.refresh = function (data)
 {
+	this._dataById = {};
 	if (!data || !data.length)
 	{
 		this._expensesList.showNoData();
 		return;
 	}
-	var lastDay, day, month, date, dateGroup, item;
+	var lastDay, lastWeek, day, week, month, date, dateGroup, item;
 	data.sort(function (a, b)
 	{
 		return a.Date - b.Date;
@@ -135,6 +141,15 @@ proto.refresh = function (data)
 	for (var i = 0; i < data.length; i++)
 	{
 		date = new Date(data[i].Date * 1000);
+		
+		week = Static.getWeek(date);
+		if (lastWeek !== week)
+		{
+			if (lastWeek)
+				this._expensesList.separateWeek();
+			lastWeek = week;
+		}
+		
 		data[i].DateTime = date;
 		day = date.getDate().toString();
 		if (day.length < 2)
@@ -145,8 +160,11 @@ proto.refresh = function (data)
 			this._expensesList.dateGroup({ Month: month, Day: day });
 			lastDay = day;
 		}
+		this._dataById[data[i].Id] = data[i];
+		
 		this._expensesList.addItem(data[i]);
 	}
+	this._expensesList.separateWeek();
 };
 
 module.exports = ExpensesCtrl;

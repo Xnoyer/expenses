@@ -222,7 +222,7 @@ h1, h2, h3
 
 .expenses_ctrl .header-wrapper .button
 {
-	margin-right: 24px;
+	margin-left: 24px;
 	margin-bottom: 6px;
 }
 
@@ -246,6 +246,12 @@ h1, h2, h3
 	display: flex;
 	flex-direction: column;
 	padding-left: 84px;
+	margin: 3px 0;
+}
+
+.expenses_list .date_group .week_total
+{
+	display: none;
 }
 
 .expenses_list .date_group .date .day
@@ -254,8 +260,6 @@ h1, h2, h3
 	padding: 0;
 	display: block;
 	font-size: 1.8em;
-	font-weight: 400;
-	color: #FFFFFF;
 }
 
 .expenses_list .date_group .date
@@ -279,12 +283,16 @@ h1, h2, h3
 
 .expenses_list .date_group .expense_item
 {
-	display: block;
+	display: flex;
 	position: relative;
-	margin-bottom: 8px;
 	width: 100%;
 	min-height: 60px;
 	border-bottom: 1px solid #D1CFCE;
+}
+
+.expenses_list .date_group .expense_item .main
+{
+	flex-grow: 1;
 }
 
 .expenses_list .date_group .expense_item .description
@@ -296,31 +304,35 @@ h1, h2, h3
 
 .expenses_list .date_group .expense_item .value
 {
-	position: absolute;
-	right: 40px;
-	top: 0;
-	height: 100%;
+	align-self: center;
+	margin-right: 24px;
 	font-size: 2.25em;
-	padding-top: 0.2em;
-	margin: auto 1em;
 }
 
 .expense_item .delete,
-.user_record .delete
+.expense_item .edit
 {
-	position: absolute;
-	right: 0;
-	top: 50%;
-	transform: translatey(-50%);
+	align-self: center;
 	border-radius: 50%;
 	width: 40px;
 	height: 40px;
-	background-image: url(images/delete_black_24x24.png);
 	opacity: .5;
 	background-position: 50% 50%;
 	background-repeat: no-repeat
 }
 
+.expense_item .delete
+{
+	background-image: url(images/delete_black_24x24.png);
+}
+
+.expense_item .edit
+{
+	background-image: url(images/edit_black_24x24.png);
+}
+
+.expense_item .delete:hover,
+.expense_item .edit:hover,
 .user_record .delete:hover
 {
 	cursor: pointer;
@@ -378,7 +390,8 @@ h1, h2, h3
 	min-height: 30px;
 }
 
-.admin_ctrl .user_list .user_record.list_header .delete
+.admin_ctrl .user_list .user_record.list_header .delete,
+.admin_ctrl .user_list .user_record.list_header .edit
 {
 	display: none;
 }
@@ -386,4 +399,62 @@ h1, h2, h3
 .admin_ctrl .user_list .user_record .field
 {
 	flex: 1;
+}
+
+@media print
+{
+	@page
+	{
+		margin: 24px auto;
+	}
+
+	.container:not(.expenses),
+	.button,
+	.delete,
+	.edit
+	{
+		display: none;
+	}
+
+	.expenses_ctrl
+	{
+		margin: 0;
+		width: 100%;
+	}
+
+	.container,
+	.expenses_ctrl,
+	.expenses_ctrl .expenses_list,
+	.expenses_ctrl .expenses_list .date_group
+	{
+		display: block;
+	}
+
+	.expenses_list .date_group .date
+	{
+		background-color: transparent;
+		border: 1px solid #D1CFCE;
+		color: #000;
+		text-shadow: none;
+	}
+
+	.expenses_list .date_group .week_total
+	{
+		display: block;
+		width: 100%;
+		text-align: right;
+		page-break-after: auto;
+		font-size: 1.2em;
+		margin: 6px 0 12px;
+	}
+
+	.expenses_list .expense_item
+	{
+		page-break-inside: avoid;
+	}
+
+	.expenses_ctrl .expenses_list .date_group
+	{
+		page-break-after: avoid;
+	}
 }

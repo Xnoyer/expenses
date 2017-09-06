@@ -6,7 +6,7 @@ module.exports =
 		{
 			if (!req.cookies["SESSIONID"])
 			{
-				res.status(401).res.send({ Result: "Unauthorized" });
+				res.status(401).send({ Result: "Unauthorized" });
 			}
 			else
 			{
@@ -26,6 +26,40 @@ module.exports =
 						if (err)
 						{
 							res.status(500).send({ Error: "Unable to add expense" });
+						}
+						else
+						{
+							res.send({ Id: key });
+						}
+					})
+				});
+			}
+		},
+		
+		Edit: function (req, res)
+		{
+			if (!req.cookies["SESSIONID"])
+			{
+				res.status(401).send({ Result: "Unauthorized" });
+			}
+			else
+			{
+				db_tools.getUserBySessionId(req.cookies["SESSIONID"], function (err, row)
+				{
+					if (err || !row)
+					{
+						if (err)
+							console.warn(err.message);
+						res.status(401).res.send({ Result: "Unauthorized" });
+						return;
+					}
+					var data = req.body;
+					delete data.Method;
+					db_tools.editExpense(row.key, data, function (err, key)
+					{
+						if (err)
+						{
+							res.status(500).send({ Error: "Unable to edit expense" });
 						}
 						else
 						{

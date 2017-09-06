@@ -22,6 +22,9 @@ proto.init = function ()
 	this._rootNode = document.createElement("div");
 	this._rootNode.classList.add("expense_item");
 	
+	this._mainNode = document.createElement("div");
+	this._mainNode.classList.add("main");
+	
 	this._descriptionNode = document.createElement("h3");
 	this._descriptionNode.classList.add("description");
 	this._descriptionNode.innerHTML = this._description + " (" + Static.timestampToTime(this._time) + ")";
@@ -34,6 +37,13 @@ proto.init = function ()
 	this._valueNode.classList.add("value");
 	this._valueNode.innerHTML = this._value;
 	
+	this._editNode = document.createElement("div");
+	this._editNode.classList.add("edit");
+	this._editNode.addEventListener("click", function ()
+	{
+		this.fireEvent("Edit", { Id: this._id });
+	}.bind(this));
+	
 	this._deleteNode = document.createElement("div");
 	this._deleteNode.classList.add("delete");
 	this._deleteNode.addEventListener("click", function ()
@@ -42,9 +52,11 @@ proto.init = function ()
 		this.fireEvent("Delete", { Id: this._id });
 	}.bind(this));
 	
-	this._rootNode.appendChild(this._descriptionNode);
-	this._rootNode.appendChild(this._commentNode);
+	this._mainNode.appendChild(this._descriptionNode);
+	this._mainNode.appendChild(this._commentNode);
+	this._rootNode.appendChild(this._mainNode);
 	this._rootNode.appendChild(this._valueNode);
+	this._rootNode.appendChild(this._editNode);
 	this._rootNode.appendChild(this._deleteNode);
 };
 

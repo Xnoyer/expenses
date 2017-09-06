@@ -8,6 +8,7 @@ var ExpensesList = function (settings)
 	settings = settings || {};
 	BaseControl.apply(this, arguments);
 	this._items = {};
+	this._weekItems = [];
 	this._dateGroup = null;
 };
 
@@ -33,6 +34,8 @@ proto.clear = function ()
 		this._items[keys[i]].detach();
 		delete this._items[keys[i]];
 	}
+	this._weekItems = [];
+	this._items = {};
 	this._rootNode.innerHTML = "";
 };
 
@@ -54,10 +57,22 @@ proto.addItem = function (data)
 	if (this._dateGroup)
 		item.render(this._dateGroup);
 	this._items[data.Id] = item;
-	item.addEventListener("Delete", function (e)
-	{
-		this.fireEvent("Delete", e.detail);
-	}.bind(this));
+	this._weekItems.push(data);
+	
+	this.pipeEvent(item, "Delete");
+	this.pipeEvent(item, "Edit");
+};
+
+proto.separateWeek = function ()
+{
+	var sum = 0, avg;
+	for (var i = 0; i < this._weekItems.length; i++)
+		sum += +this._weekItems[i].Value;
+	avg = (sum / this._weekItems.length).toFixed(2);
+	var totalsLabel = new Label({ Content: "Week total expenses: " + sum + "$ | Day average: " + avg + "$" });
+	totalsLabel.addCssClass("week_total");
+	totalsLabel.render(this._dateGroup);
+	this._weekItems = [];
 };
 
 proto.dateGroup = function (data)

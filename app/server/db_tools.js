@@ -161,6 +161,24 @@ function DBTools ()
 		});
 	};
 	
+	this.editExpense = function (userId, data, callback)
+	{
+		var date = data.Date;
+		if (!this._isOpened())
+			this._openDb();
+		var key = data.Id;
+		delete data.Id;
+		this._db.run("UPDATE expenses SET datetime = ?, data = ? WHERE user = ? AND key = ?", [date, JSON.stringify(data), userId, key], function (err)
+		{
+			if (err)
+			{
+				console.error("Error querying database", err);
+				throw new Error(err);
+			}
+			callback(null, key);
+		});
+	};
+	
 	this.removeExpense = function (userId, key, callback)
 	{
 		if (!this._isOpened())

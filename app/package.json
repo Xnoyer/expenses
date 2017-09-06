@@ -4,7 +4,7 @@
   "description": "Test task for Akvelon",
   "main": "server/backend",
   "scripts": {
-    "test": "jasmine-node spec",
+	"test": "jasmine-node --verbose --color --captureExceptions spec",
     "initdb": "node server/init_db.js"
   },
   "author": "m.stets",

@@ -81,7 +81,7 @@ module.exports =
 						}
 						else
 						{
-							res.send({ Id: req.body.Id });
+							res.send({ Key: req.body.Key });
 						}
 					})
 				});

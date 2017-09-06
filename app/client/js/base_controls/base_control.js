@@ -56,6 +56,14 @@ proto.detach = function ()
 		this._rootNode.parentNode.removeChild(this._rootNode);
 };
 
+proto.pipeEvent = function (ctrl, event, optionalEventSelf)
+{
+	ctrl.addEventListener(event, function (e)
+	{
+		this.fireEvent(optionalEventSelf || event, e.detail);
+	}.bind(this));
+};
+
 proto.fireEvent = function (eventName, args)
 {
 	var event = new CustomEvent(eventName, { detail: args });

@@ -69,6 +69,7 @@ var AdminCtrl = require('./admin_controls/admin_ctrl.js');
 		
 		expenses_ctrl = new ExpensesCtrl();
 		expenses_ctrl.addEventListener("AddExpense", onAddExpense);
+		expenses_ctrl.addEventListener("EditExpense", onEditExpense);
 		expenses_ctrl.addEventListener("RemoveExpense", onRemoveExpense);
 		expenses_ctrl.addEventListener("FilterExpenses", onFilterExpenses);
 		
@@ -165,6 +166,31 @@ var AdminCtrl = require('./admin_controls/admin_ctrl.js');
 		{
 			data.Id = arg.ResponseJSON.Id;
 			app.state.Expenses.push(data);
+			expenses_ctrl.clear();
+			expenses_ctrl.refresh(app.state.Expenses);
+			expenses_ctrl.unlock();
+		});
+	}
+	
+	function onEditExpense (e)
+	{
+		var data = e.detail;
+		expenses_ctrl.lock();
+		service.ExpenseService("Edit", data).then(function (arg)
+		{
+			var index = -1;
+			for (var i = 0; i < app.state.Expenses.length; i++)
+			{
+				if (app.state.Expenses[i].Id === arg.ResponseJSON.Id)
+				{
+					index = i;
+					break;
+				}
+			}
+			if (i > -1)
+				app.state.Expenses[i] = data;
+			else
+				throw new Error("Expense not found");
 			expenses_ctrl.clear();
 			expenses_ctrl.refresh(app.state.Expenses);
 			expenses_ctrl.unlock();
