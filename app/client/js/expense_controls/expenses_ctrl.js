@@ -32,30 +32,34 @@ proto.init = function ()
 	this._header.innerHTML = "My expenses list";
 	this._headerContainer.appendChild(this._header);
 	
+	this._buttonContainer = document.createElement("div");
+	this._buttonContainer.classList.add("button-wrapper");
+	this._headerContainer.appendChild(this._buttonContainer);
+	
 	this._filterButton = new Button({ Text: "Filter" });
 	this._filterButton.addCssClass("filter_button");
 	this._filterButton.addEventListener("Click", this._onFilterButtonClick.bind(this));
-	this._filterButton.render(this._headerContainer);
+	this._filterButton.render(this._buttonContainer);
 	
 	this._resetFilterButton = new Button({ Text: "Reset" });
 	this._resetFilterButton.addCssClass("reset_filter_button");
 	this._resetFilterButton.addEventListener("Click", this._onResetFilterButtonClick.bind(this));
-	this._resetFilterButton.render(this._headerContainer);
+	this._resetFilterButton.render(this._buttonContainer);
 	this._resetFilterButton.hide();
 	
 	this._addButton = new Button({ Text: "+ Add new Expense" });
 	this._addButton.addCssClass("add_button");
 	this._addButton.addEventListener("Click", this._onAddButtonClick.bind(this));
-	this._addButton.render(this._headerContainer);
+	this._addButton.render(this._buttonContainer);
 	
-	this._addButton = new Button({ Text: " " });
+	this._addButton = new Button({ Text: "&nbsp;" });
 	this._addButton.addCssClass("print_button");
 	this._addButton.addCssClass("img_button");
 	this._addButton.addEventListener("Click", function ()
 	{
 		window.print();
 	});
-	this._addButton.render(this._headerContainer);
+	this._addButton.render(this._buttonContainer);
 	
 	this._expensesList = new ExpensesList();
 	this._expensesList.render(this);

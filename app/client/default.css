@@ -71,6 +71,11 @@ h1, h2, h3
 	background-repeat: no-repeat;
 }
 
+.button.img_button::after
+{
+	content: ' ';
+}
+
 .button.print_button
 {
 	background-image: url("/images/print_white_24x24.png");
@@ -83,7 +88,7 @@ h1, h2, h3
 .banner-wrapper
 {
 	overflow: hidden;
-	padding: 10em 0 5em 0;
+	padding: 5em 0 5em 0;
 	background: url("images/bg01.jpg") no-repeat center top;
 	background-size: 100% auto;
 }
@@ -126,12 +131,22 @@ h1, h2, h3
 
 .box
 {
+	display: flex;
+	flex-direction: column;
 	flex: 1;
 	background: #FFF;
 	padding: 40px 40px;
-	align-self: center;
-	align-content: center;
 	margin: 0 24px;
+}
+
+.box .button
+{
+	align-self: flex-end;
+}
+
+.box p
+{
+	flex-grow: 1;
 }
 
 .modal
@@ -232,6 +247,11 @@ h1, h2, h3
 	white-space: nowrap;
 }
 
+.expenses_ctrl .header-wrapper .button_wrapper
+{
+	display: flex;
+}
+
 .expenses_ctrl .header-wrapper .button
 {
 	margin-left: 24px;
@@ -322,6 +342,7 @@ h1, h2, h3
 }
 
 .expense_item .delete,
+.user_record .delete,
 .expense_item .edit
 {
 	align-self: center;
@@ -333,11 +354,13 @@ h1, h2, h3
 	background-repeat: no-repeat
 }
 
+.user_record .delete,
 .expense_item .delete
 {
 	background-image: url(images/delete_black_24x24.png);
 }
 
+.user_record .edit,
 .expense_item .edit
 {
 	background-image: url(images/edit_black_24x24.png);
@@ -405,7 +428,7 @@ h1, h2, h3
 .admin_ctrl .user_list .user_record.list_header .delete,
 .admin_ctrl .user_list .user_record.list_header .edit
 {
-	display: none;
+	visibility: hidden;
 }
 
 .admin_ctrl .user_list .user_record .field
@@ -440,6 +463,11 @@ h1, h2, h3
 	.expenses_ctrl .expenses_list .date_group
 	{
 		display: block;
+	}
+
+	.expenses_ctrl .expenses_list .date_group .value
+	{
+		margin-right: 0;
 	}
 
 	.expenses_list .date_group .date
