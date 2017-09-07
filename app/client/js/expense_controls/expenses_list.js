@@ -44,6 +44,11 @@ proto.showNoData = function ()
 	this._noDataLabel.render(this._rootNode);
 };
 
+proto.setNoDataText = function (text)
+{
+	this._noDataLabel.setContent(text || "You have no expenses yet. Add one with button above");
+};
+
 proto.addItem = function (data)
 {
 	this._noDataLabel.detach();
@@ -86,6 +91,11 @@ proto.removeItem = function (id)
 {
 	this._items[id].detach();
 	delete this._items[id];
+	if (!Object.keys(this._items).length)
+	{
+		this._dateGroup.detach();
+		this.showNoData();
+	}
 };
 
 module.exports = ExpensesList;

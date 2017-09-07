@@ -19,4 +19,11 @@ proto.init = function ()
 	this._rootNode.innerHTML = this._content;
 };
 
+proto.setContent = function (content)
+{
+	this._content = content;
+	this._rootNode.innerHTML = this._content;
+	return this;
+};
+
 module.exports = Label;

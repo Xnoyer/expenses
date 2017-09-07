@@ -1,8 +1,6 @@
 var BaseDialog = require('../base_controls/base_dialog.js');
 var Input = require('../base_controls/input.js');
-var Button = require('../base_controls/button.js');
 var Label = require('../base_controls/label.js');
-var Service = require('../service.js');
 
 RegisterDialog = function (settings)
 {
@@ -75,20 +73,12 @@ proto.onOk = function ()
 	
 	if (this._errNode.parentNode === this._contentNode)
 		this._contentNode.removeChild(this._errNode);
-	Service.AuthService("Register",
+	this.fireEvent("Register",
 		{
 			Name: name,
 			Login: login,
 			Password: password
-		}).then(function (arg)
-	{
-		this.fireEvent("RegisterSuccess", arg.ResponseJSON);
-	}.bind(this), function ()
-	{
-		this.fireEvent("RegisterFailed");
-		this._errNode.innerHTML = "Sorry, the same login is already used. Please try again";
-		this._contentNode.appendChild(this._errNode);
-	}.bind(this));
+		});
 };
 
 module.exports = RegisterDialog;

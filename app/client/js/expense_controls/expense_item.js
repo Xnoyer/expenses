@@ -48,7 +48,6 @@ proto.init = function ()
 	this._deleteNode.classList.add("delete");
 	this._deleteNode.addEventListener("click", function ()
 	{
-		this.lock();
 		this.fireEvent("Delete", { Id: this._id });
 	}.bind(this));
 	

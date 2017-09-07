@@ -79,6 +79,7 @@ proto.init = function ()
 		this._resetFilterButton.show();
 		var text = "Filter (" + Static.shortTimestampToReadableString(this._filter.StartDate) + " - " + Static.shortTimestampToReadableString(this._filter.EndDate);
 		this._filterButton.setText(text);
+		this._expensesList.setNoDataText("Nothing to display here. Try to reset filter");
 	}.bind(this));
 	this._filterDialog.render();
 	this._filterDialog.hide();
@@ -117,6 +118,7 @@ proto._onResetFilterButtonClick = function ()
 	this._resetFilterButton.hide();
 	this._filterButton.setText("Filter");
 	this.fireEvent("FilterExpenses", null);
+	this._expensesList.setNoDataText();
 };
 
 proto.getList = function ()

@@ -1,8 +1,6 @@
 var BaseDialog = require('../base_controls/base_dialog.js');
 var Input = require('../base_controls/input.js');
-var Button = require('../base_controls/button.js');
 var Label = require('../base_controls/label.js');
-var Service = require('../service.js');
 
 AuthDialog = function (settings)
 {
@@ -47,6 +45,12 @@ proto.hide = function ()
 	this.clear();
 };
 
+proto.error = function (text)
+{
+	this._errNode.innerHTML = text;
+	this._contentNode.appendChild(this._errNode);
+};
+
 proto.onOk = function ()
 {
 	var login = this._loginInputCtrl.getContent(),
@@ -66,20 +70,7 @@ proto.onOk = function ()
 	
 	if (this._errNode.parentNode === this._contentNode)
 		this._contentNode.removeChild(this._errNode);
-	Service.AuthService("Auth",
-		{
-			Method: "Auth",
-			Login: login,
-			Password: password
-		}).then(function (arg)
-	{
-		this.fireEvent("AuthSuccess", arg.ResponseJSON);
-	}.bind(this), function ()
-		{
-			this.fireEvent("AuthFailed");
-			this._contentNode.innerHTML = "Incorrect login or password. Please try again";
-			this._rootNode.appendChild(this._errNode);
-		}.bind(this));
+	this.fireEvent("Auth", { Login: login, Password: password });
 };
 
 module.exports = AuthDialog;

@@ -47,4 +47,11 @@ proto.onBgClick = function (e)
 		this.hide();
 };
 
+proto.destroy = function ()
+{
+	if (this._bgNode.parentNode)
+		document.body.removeChild(this._bgNode);
+	delete this._bgNode;
+};
+
 module.exports = BaseModal;

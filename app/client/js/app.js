@@ -1,6 +1,7 @@
 var service = require('./service.js');
 var AuthHeader = require('./auth_controls/auth_header.js');
 var AuthBanner = require('./auth_controls/auth_banner.js');
+var Confirm = require('./base_controls/confirm.js');
 var AuthDialog = require('./auth_controls/auth_dialog.js');
 var RegisterDialog = require('./auth_controls/register_dialog.js');
 var ExpensesCtrl = require('./expense_controls/expenses_ctrl.js');
@@ -62,10 +63,10 @@ var AdminCtrl = require('./admin_controls/admin_ctrl.js');
 		auth_banner.addEventListener("SignUp", onSignUpRequested);
 		
 		auth_dialog = new AuthDialog({ Width: 360, Height: 450 });
-		auth_dialog.addEventListener("AuthSuccess", onAuth);
+		auth_dialog.addEventListener("Auth", onAuthAttempt);
 		
 		register_dialog = new RegisterDialog({ Width: 360, Height: 550 });
-		register_dialog.addEventListener("RegisterSuccess", onRegister);
+		register_dialog.addEventListener("RegisterSuccess", onRegisterAttempt);
 		
 		expenses_ctrl = new ExpensesCtrl();
 		expenses_ctrl.addEventListener("AddExpense", onAddExpense);
@@ -107,35 +108,59 @@ var AdminCtrl = require('./admin_controls/admin_ctrl.js');
 		});
 	}
 	
-	function onAuth (evt)
+	function onAuthAttempt (e)
 	{
-		var user = evt.detail;
-		auth_dialog.clear();
-		auth_dialog.hide();
-		app.state.Authorized = true;
-		app.state.User = user;
-		auth_header.login(user);
-		auth_banner.detach();
-		expenses_ctrl.show();
-		getExpenses();
-		if (app.state.User.Role > 2)
+		var data = e.detail;
+		service.AuthService("Auth",
+			{
+				Method: "Auth",
+				Login: data.Login,
+				Password: data.Password
+			}).then(function (arg)
 		{
-			//Admin
-			showAdminCtrl();
-		}
+			var user = arg.ResponseJSON;
+			auth_dialog.clear();
+			auth_dialog.hide();
+			app.state.Authorized = true;
+			app.state.User = user;
+			auth_header.login(user);
+			auth_banner.detach();
+			expenses_ctrl.show();
+			getExpenses();
+			if (app.state.User.Role > 2)
+			{
+				//Admin
+				showAdminCtrl();
+			}
+		}.bind(this), function ()
+		{
+			auth_dialog.error("Incorrect login or password. Please try again");
+		}.bind(this));
 	}
 	
-	function onRegister (evt)
+	function onRegisterAttempt (evt)
 	{
-		var user = evt.detail;
-		register_dialog.clear();
-		register_dialog.hide();
-		app.state.Authorized = true;
-		app.state.User = user;
-		auth_header.login(user);
-		auth_banner.detach();
-		expenses_ctrl.refresh();
-		expenses_ctrl.show();
+		var data = e.detail;
+		service.AuthService("Register",
+			{
+				Name: data.Name,
+				Login: data.Login,
+				Password: data.Password
+			}).then(function (arg)
+		{
+			var user = arg.ResponseJSON;
+			register_dialog.clear();
+			register_dialog.hide();
+			app.state.Authorized = true;
+			app.state.User = user;
+			auth_header.login(user);
+			auth_banner.detach();
+			expenses_ctrl.refresh();
+			expenses_ctrl.show();
+		}.bind(this), function ()
+		{
+			register_dialog.error("Sorry, the same login is already used. Please try again");
+		}.bind(this));
 	}
 	
 	function onSignInRequested ()
@@ -161,21 +186,18 @@ var AdminCtrl = require('./admin_controls/admin_ctrl.js');
 	function onAddExpense (e)
 	{
 		var data = e.detail;
-		expenses_ctrl.lock();
 		service.ExpenseService("Add", data).then(function (arg)
 		{
 			data.Id = arg.ResponseJSON.Id;
 			app.state.Expenses.push(data);
 			expenses_ctrl.clear();
 			expenses_ctrl.refresh(app.state.Expenses);
-			expenses_ctrl.unlock();
 		});
 	}
 	
 	function onEditExpense (e)
 	{
 		var data = e.detail;
-		expenses_ctrl.lock();
 		service.ExpenseService("Edit", data).then(function (arg)
 		{
 			var index = -1;
@@ -193,7 +215,6 @@ var AdminCtrl = require('./admin_controls/admin_ctrl.js');
 				throw new Error("Expense not found");
 			expenses_ctrl.clear();
 			expenses_ctrl.refresh(app.state.Expenses);
-			expenses_ctrl.unlock();
 		});
 	}
 	
@@ -209,23 +230,28 @@ var AdminCtrl = require('./admin_controls/admin_ctrl.js');
 	
 	function onRemoveExpense (e)
 	{
-		service.ExpenseService("Remove", e.detail).then(function (arg)
+		var confirm = new Confirm({ Message: "Do you really want to remove this expense? this action can not be undone." });
+		confirm.addEventListener("Ok", function ()
 		{
-			var index = -1;
-			for (var i = 0; i < app.state.Expenses.length; i++)
+			service.ExpenseService("Remove", e.detail).then(function (arg)
 			{
-				if (app.state.Expenses[i].Id === e.detail.Id)
+				var index = -1;
+				for (var i = 0; i < app.state.Expenses.length; i++)
 				{
-					index = i;
-					break;
+					if (app.state.Expenses[i].Id === e.detail.Id)
+					{
+						index = i;
+						break;
+					}
 				}
-			}
-			if (i > -1)
-				app.state.Expenses.splice(i, 1);
-			else
-				throw new Error("Expense not found");
-			expenses_ctrl.getList().removeItem(e.detail.Id);
-		});
+				if (i > -1)
+					app.state.Expenses.splice(i, 1);
+				else
+					throw new Error("Expense not found");
+				expenses_ctrl.getList().removeItem(e.detail.Id);
+			});
+		}.bind(this));
+		confirm.show();
 	}
 	
 	function showAdminCtrl ()

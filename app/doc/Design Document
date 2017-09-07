@@ -1,0 +1,54 @@
+My expenses app.
+
+This application consist of three main layers:
+ - SQLite database
+ - Backend (Node.js)
+ - Frontent (Javascript)
+
+
+1. Database layer
+
+The database structure consist of tables and fields:
+ - expenses
+ | - key
+ | - user
+ | - datetime
+ | - data
+ - roles
+ | - key
+ | - name
+ - sessions
+ | - key
+ | - user
+ | - id
+ | - created_date
+ | - expiry_date
+ - users
+ | - key
+ | - name
+ | - login
+ | - password
+ | - role
+
+Each table "key" field is the autoincrement index field.
+expenses.user is a link to users.key
+sessions.user is a link to user.key
+users.role is a link to role.key
+
+2. Backend
+
+Backend layer consist of next layers:
+ - Main application layer. Also web server based on express.js. (backend.js)
+    Manages web server, distributing queries between services in services layer.
+ - Services layer (auth_service.js, expense_service.js, admin_service.js)
+    Contains methods which can be called via HTTP request to main server with corresponding parameters.
+    Mostly work with database access layer, process requests and send responses.
+ - Database access layer (db_tools.js)
+    Contains methods to manipulate database which called from Services layer.
+
+3. Frontent
+
+Frontent layer consist of next layers:
+ - Main application layer. It creates and updates controls, listens to its events, makes calls to services via service layer etc.
+ - Service layer. It consist of methods which make calls to web services and provide interface to process responses.
+ - Controls layer. Consist of different controls to visualize data, authenticate user, work with expenses etc.
