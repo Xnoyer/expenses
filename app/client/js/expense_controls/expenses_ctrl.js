@@ -1,10 +1,11 @@
-var Static = require('../static.js');
 var BaseControl = require('../base_controls/base_control.js');
 var ExpensesList = require('./expenses_list.js');
 var Button = require('../base_controls/button.js');
 var AddExpenseDialog = require('./add_expense_dialog.js');
 var EditExpenseDialog = require('./edit_expense_dialog.js');
 var FilterExpensesDialog = require('./filter_expenses_dialog.js');
+var moment = require("moment");
+moment.locale(navigator.language);
 
 var ExpensesCtrl = function (settings)
 {
@@ -15,11 +16,6 @@ var ExpensesCtrl = function (settings)
 ExpensesCtrl.prototype = Object.create(BaseControl.prototype);
 
 var proto = ExpensesCtrl.prototype;
-
-proto._monthArray = [
-	'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun',
-	'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'
-];
 
 proto.init = function ()
 {
@@ -52,6 +48,15 @@ proto.init = function ()
 	this._addButton.addEventListener("Click", this._onAddButtonClick.bind(this));
 	this._addButton.render(this._headerContainer);
 	
+	this._addButton = new Button({ Text: " " });
+	this._addButton.addCssClass("print_button");
+	this._addButton.addCssClass("img_button");
+	this._addButton.addEventListener("Click", function ()
+	{
+		window.print();
+	});
+	this._addButton.render(this._headerContainer);
+	
 	this._expensesList = new ExpensesList();
 	this._expensesList.render(this);
 	this.pipeEvent(this._expensesList, "Delete", "RemoveExpense");
@@ -77,7 +82,7 @@ proto.init = function ()
 		this._filter = e.detail;
 		this.fireEvent("FilterExpenses", e.detail);
 		this._resetFilterButton.show();
-		var text = "Filter (" + Static.shortTimestampToReadableString(this._filter.StartDate) + " - " + Static.shortTimestampToReadableString(this._filter.EndDate);
+		var text = "Filter (" + moment.unix(this._filter.StartDate).format("L LT") + " - " + moment.unix(this._filter.EndDate).format("L LT") + ")";
 		this._filterButton.setText(text);
 		this._expensesList.setNoDataText("Nothing to display here. Try to reset filter");
 	}.bind(this));
@@ -144,7 +149,7 @@ proto.refresh = function (data)
 	{
 		date = new Date(data[i].Date * 1000);
 		
-		week = Static.getWeek(date);
+		week = moment(date).week();
 		if (lastWeek !== week)
 		{
 			if (lastWeek)
@@ -153,10 +158,8 @@ proto.refresh = function (data)
 		}
 		
 		data[i].DateTime = date;
-		day = date.getDate().toString();
-		if (day.length < 2)
-			day = "0" + day;
-		month = this._monthArray[date.getMonth()];
+		day = moment(date).format("DD");
+		month = moment(date).format("MMM");
 		if (day !== lastDay)
 		{
 			this._expensesList.dateGroup({ Month: month, Day: day });

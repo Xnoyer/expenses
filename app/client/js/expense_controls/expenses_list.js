@@ -2,6 +2,7 @@ var BaseControl = require('../base_controls/base_control.js');
 var DateGroup = require("./date_group.js");
 var ExpenseItem = require("./expense_item.js");
 var Label = require("../base_controls/label.js");
+var numeral = require('numeral');
 
 var ExpensesList = function (settings)
 {
@@ -74,7 +75,7 @@ proto.separateWeek = function ()
 	for (var i = 0; i < this._weekItems.length; i++)
 		sum += +this._weekItems[i].Value;
 	avg = (sum / this._weekItems.length).toFixed(2);
-	var totalsLabel = new Label({ Content: "Week total expenses: " + sum + "$ | Day average: " + avg + "$" });
+	var totalsLabel = new Label({ Content: "Week total expenses: " + numeral(sum).format("0,0.[00]") + "$ | Daily average: " + numeral(avg).format("0,0.[00]") + "$" });
 	totalsLabel.addCssClass("week_total");
 	totalsLabel.render(this._dateGroup);
 	this._weekItems = [];

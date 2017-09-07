@@ -1,4 +1,5 @@
-var Static = require('../static.js');
+var moment = require('moment');
+moment.locale(navigator.language);
 var BaseDialog = require('../base_controls/base_dialog.js');
 var Input = require('../base_controls/input.js');
 var Label = require('../base_controls/label.js');
@@ -40,13 +41,13 @@ proto.refresh = function (filter)
 {
 	if (filter)
 	{
-		this._startDateInputCtrl.setParams({ value: Static.dateToString(new Date(filter.StartDate * 1000)), required: true });
-		this._endDateInputCtrl.setParams({ value: Static.dateToString(new Date(filter.EndDate * 1000)), required: true });
+		this._startDateInputCtrl.setParams({ value: moment.unix(filter.StartDate).format("YYYY-MM-DDTHH:mm"), required: true });
+		this._endDateInputCtrl.setParams({ value: moment.unix(filter.EndDate).format("YYYY-MM-DDTHH:mm"), required: true });
 	}
 	else
 	{
-		this._startDateInputCtrl.setParams({ value: Static.dateToString(new Date(Date.now() - 24 * 60 * 60 * 1000)), required: true });
-		this._endDateInputCtrl.setParams({ value: Static.dateToString(new Date()), required: true });
+		this._startDateInputCtrl.setParams({ value: moment().add(-1, 'd').format("YYYY-MM-DDTHH:mm"), required: true });
+		this._endDateInputCtrl.setParams({ value: moment().format("YYYY-MM-DDTHH:mm"), required: true });
 	}
 };
 

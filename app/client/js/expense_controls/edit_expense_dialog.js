@@ -1,4 +1,5 @@
-var Static = require('../static.js');
+var moment = require('moment');
+moment.locale(navigator.language);
 var BaseDialog = require('../base_controls/base_dialog.js');
 var AddExpenseDialog = require('./add_expense_dialog.js');
 
@@ -54,7 +55,7 @@ proto.update = function (expense)
 	this._descriptionInputCtrl.setParams({ value: expense.Description });
 	this._commentInputCtrl.setParams({ value: expense.Comment });
 	this._valueInputCtrl.setParams({ value: expense.Value });
-	this._dateInputCtrl.setParams({ value: Static.shortTimestampToString(expense.Date) });
+	this._dateInputCtrl.setParams({ value: moment.unix(expense.Date).format("YYYY-MM-DDTHH:mm") });
 	this._id = expense.Id;
 };
 

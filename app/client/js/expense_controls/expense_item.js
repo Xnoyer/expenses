@@ -1,5 +1,7 @@
 var BaseControl = require('../base_controls/base_control.js');
-var Static = require('../static.js');
+var moment = require('moment');
+moment.locale(navigator.language);
+var numeral = require('numeral');
 
 var ExpenseItem = function (settings)
 {
@@ -27,7 +29,7 @@ proto.init = function ()
 	
 	this._descriptionNode = document.createElement("h3");
 	this._descriptionNode.classList.add("description");
-	this._descriptionNode.innerHTML = this._description + " (" + Static.timestampToTime(this._time) + ")";
+	this._descriptionNode.innerHTML = this._description + " (" + moment(this._time).format("LT") + ")";
 	
 	this._commentNode = document.createElement("span");
 	this._commentNode.classList.add("comment");
@@ -35,7 +37,7 @@ proto.init = function ()
 	
 	this._valueNode = document.createElement("div");
 	this._valueNode.classList.add("value");
-	this._valueNode.innerHTML = this._value;
+	this._valueNode.innerHTML = numeral(this._value).format("0,0.[00]$");
 	
 	this._editNode = document.createElement("div");
 	this._editNode.classList.add("edit");

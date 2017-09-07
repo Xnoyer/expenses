@@ -1,4 +1,5 @@
-var Static = require('../static.js');
+var moment = require('moment');
+moment.locale(navigator.language);
 var BaseDialog = require('../base_controls/base_dialog.js');
 var Input = require('../base_controls/input.js');
 var Label = require('../base_controls/label.js');
@@ -55,7 +56,7 @@ proto.show = function ()
 {
 	BaseDialog.prototype.show.apply(this, arguments);
 	this._valueInputCtrl.setParams({ min: .01, value: 1, required: true });
-	this._dateInputCtrl.setParams({ value: Static.dateToString(new Date()), required: true });
+	this._dateInputCtrl.setParams({ value: moment().format("YYYY-MM-DDTHH:mm"), required: true });
 };
 
 proto.hide = function ()
