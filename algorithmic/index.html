@@ -2,12 +2,21 @@
 <html lang="en">
 <head>
 	<script src="02_Binary_Search.js"></script>
+	<script src="03_Insert_In_A_Sorted_Array.js"></script>
 	<meta charset="UTF-8">
 	<title>Algorithmic</title>
+	<style>
+		.task
+		{
+			margin: 24px 0;
+			border: 1px solid #6c6c6c;
+		}
+	</style>
 </head>
 <body>
 
-<span id="02"></span>
+<div id="02" class="task"></div>
+<div id="03" class="task"></div>
 
 <script>
 	
@@ -42,6 +51,22 @@
 		span.innerHTML += lowerSubArr.join(",") + ",<b>" + arr[idx] + "</b>," + higherSubArr.join(",") + "...";
 	}
 
+	//03
+
+	var list = new LinkedList(), node;
+	for (i = 0; i < 20; i++)
+	{
+		node = list.createNode(Math.floor(Math.random() * 100));
+		list.sortedInsert(node);
+	}
+	node = list.head;
+	var domNode = document.getElementById("03");
+	domNode.innerHTML = node.data;
+	while (node.next)
+	{
+		domNode.innerHTML += " => " + node.next.data;
+		node = node.next;
+	}
 
 </script>
 
