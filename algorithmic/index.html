@@ -1,72 +1,153 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+	<script src="01_Stack.js"></script>
 	<script src="02_Binary_Search.js"></script>
 	<script src="03_Insert_In_A_Sorted_Array.js"></script>
+	<script src="04_Preorder_Traversal.js"></script>
+	<script src="05_Card_Deck.js"></script>
+
+	<script src="08_Print_All_Positive_Integer_Solutions.js"></script>
+	<script src="09_Find_Element_In_2_Arrays.js"></script>
 	<meta charset="UTF-8">
 	<title>Algorithmic</title>
 	<style>
 		.task
 		{
 			margin: 24px 0;
+			padding: 12px;
 			border: 1px solid #6c6c6c;
 		}
 	</style>
 </head>
 <body>
 
+<div id="01" class="task"></div>
 <div id="02" class="task"></div>
 <div id="03" class="task"></div>
+<div id="04" class="task"></div>
+<div id="05" class="task"></div>
+
+
+<div id="08" style="height: 100px; overflow: auto" class="task"></div>
+<div id="09" class="task"></div>
+
 
 <script>
-	
-	var arr = [], i;
-	for (i = 0; i < 1000; i++)
+
+	(function ()
 	{
-		var num = Math.ceil(Math.random() * 200);
-		if (arr.indexOf(num) === -1)
-			arr.push(num);
-	}
-	
-	arr.sort(function (a, b)
+		var domNode = document.getElementById("01");
+		var numArray = [], stack = new Stack(), i;
+		for (i = 0; i < 10; i++)
+			numArray.push(Math.floor(Math.random() * 100));
+		domNode.innerHTML = "Created array of random numbers:<br />";
+		domNode.innerHTML += numArray.join(",") + "<br/>And pushed to the stack...<br/>";
+		for (i = 0; i < numArray.length; i++)
+			stack.push(numArray[i]);
+		domNode.innerHTML += "Now popping from this stack:<br/>";
+		domNode.innerHTML += stack.pop();
+		while (stack.hasElements())
+			domNode.innerHTML += ", " + stack.pop();
+	})();
+
+	(function ()
 	{
-		return a - b;
-	});
-	
-	var span = document.getElementById("02"),
-		target = Math.ceil(Math.random() * 150);
-	
-	span.innerHTML = "Searching for integer " + target + "...<br />";
-	
-	var idx = binarySearch(arr, target);
-	
-	span.innerHTML += "found index is " + idx;
-	if (idx === -1)
-		span.innerHTML += " nothing found";
-	else
-	{
-		span.innerHTML += "<br />rolling neighboring 10 elements...<br />...";
-		lowerSubArr = arr.slice(Math.max(idx - 5, 0), idx);
-		higherSubArr = arr.slice(idx + 1, Math.min(idx + 6, arr.length));
-		span.innerHTML += lowerSubArr.join(",") + ",<b>" + arr[idx] + "</b>," + higherSubArr.join(",") + "...";
-	}
+		var arr = [], i;
+		for (i = 0; i < 1000; i++)
+		{
+			var num = Math.ceil(Math.random() * 200);
+			if (arr.indexOf(num) === -1)
+				arr.push(num);
+		}
+
+		arr.sort(function (a, b)
+		{
+			return a - b;
+		});
+
+		var domNode = document.getElementById("02"),
+			target = Math.ceil(Math.random() * 150);
+
+		domNode.innerHTML = "Searching for integer " + target + "...<br />";
+
+		var idx = binarySearch(arr, target);
+
+		domNode.innerHTML += "found index is " + idx;
+		if (idx === -1)
+			domNode.innerHTML += " nothing found";
+		else
+		{
+			domNode.innerHTML += "<br />rolling neighboring 10 elements...<br />...";
+			lowerSubArr = arr.slice(Math.max(idx - 5, 0), idx);
+			higherSubArr = arr.slice(idx + 1, Math.min(idx + 6, arr.length));
+			domNode.innerHTML += lowerSubArr.join(", ") + ", <b>" + arr[idx] + "</b>, " + higherSubArr.join(", ") + "...";
+		}
+	})();
 
 	//03
 
-	var list = new LinkedList(), node;
-	for (i = 0; i < 20; i++)
+	(function ()
 	{
-		node = list.createNode(Math.floor(Math.random() * 100));
-		list.sortedInsert(node);
-	}
-	node = list.head;
-	var domNode = document.getElementById("03");
-	domNode.innerHTML = node.data;
-	while (node.next)
+		var domNode = document.getElementById("03");
+		domNode.innerHTML = "Randomly inserting 20 numbers into an empty linked list<br />";
+		var list = new LinkedList(), node;
+		for (var i = 0; i < 20; i++)
+		{
+			node = list.createNode(Math.floor(Math.random() * 100));
+			list.sortedInsert(node);
+		}
+		node = list.head;
+		domNode.innerHTML += node.data;
+		while (node.next)
+		{
+			domNode.innerHTML += " => " + node.next.data;
+			node = node.next;
+		}
+	})();
+
+	//04
+
+	(function ()
 	{
-		domNode.innerHTML += " => " + node.next.data;
-		node = node.next;
-	}
+		var bintree = new BinarySearchTree(1, 10),
+			domNode = document.getElementById("04");
+		domNode.innerHTML = "Created binary search tree from 1 to 10<br/>";
+		domNode.innerHTML += "Iterating through its values and print in order<br/>";
+		domNode.innerHTML += iterateTree(bintree).join(", ");
+	})();
+
+	(function ()
+	{
+		var cardDeck = new CardDeck(),
+			domNode = document.getElementById("05");
+		domNode.innerHTML = "Created full card deck. Printing initial set<br/>";
+		domNode.innerHTML += cardDeck.toString();
+		domNode.innerHTML += "<br />Shuffling and printing again<br/>";
+		cardDeck.shuffle();
+		domNode.innerHTML += cardDeck.toString();
+	})();
+
+	//08
+
+	(function ()
+	{
+		var domNode = document.getElementById("08");
+		domNode.innerHTML = getCubeEquals();
+	})();
+
+	//09
+
+	(function ()
+	{
+		var arr1 = [1, 4, 5, 6, 8, 11],
+			arr2 = [2, 5, 9, 20, 40, 11, 41],
+			domNode = document.getElementById("09");
+		domNode.innerHTML = "Given 2 arrays:<br />";
+		domNode.innerHTML += "[" + arr1.join(", ") + "]<br/>";
+		domNode.innerHTML += "[" + arr2.join(", ") + "]<br/>";
+		domNode.innerHTML += "Commons are [" + findCommon(arr1, arr2) + "]";
+	})();
 
 </script>
 
