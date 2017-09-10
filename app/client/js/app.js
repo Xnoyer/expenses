@@ -81,17 +81,17 @@ var AdminCtrl = require('./admin_controls/admin_ctrl.js');
 		{
 			if (arg && arg.ResponseJSON)
 			{
-				app.state.Authorized = true;
-				app.state.User = arg.ResponseJSON;
-				getExpenses();
-			}
-			app.drawInterface();
-		}, function (arg)
-		{
-			if (arg.Status === 401)
-			{
-				app.state.Authorized = false;
-				app.state.User = null;
+				if (arg.ResponseJSON == "Unauthorized")
+				{
+					app.state.Authorized = false;
+					app.state.User = null;
+				}
+				else
+				{
+					app.state.Authorized = true;
+					app.state.User = arg.ResponseJSON;
+					getExpenses();
+				}
 			}
 			app.drawInterface();
 		});

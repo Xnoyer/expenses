@@ -2,98 +2,80 @@ var db_tools = require("./db_tools.js");
 
 module.exports =
 	{
-		Add: function (req, res)
+		_checkUserLoggedIn: function (req, res, callback)
 		{
 			if (!req.cookies["SESSIONID"])
-			{
-				res.status(401).send({ Result: "Unauthorized" });
-			}
+				res.status(401).send({ Error: "Unauthorized" });
 			else
 			{
 				db_tools.getUserBySessionId(req.cookies["SESSIONID"], function (err, row)
 				{
-					if (err || !row)
+					if (err || !row || !row.key)
 					{
 						if (err)
-							console.warn(err.message);
-						res.status(401).res.send({ Result: "Unauthorized" });
+							callback(err);
+						else
+							res.status(401).send({ Error: "Unauthorized" });
 						return;
 					}
-					var data = req.body;
-					delete data.Method;
+					callback(null, row);
+				});
+			}
+		},
+		
+		Add: function (req, res, callback)
+		{
+			this._checkUserLoggedIn(req, res, function (err, row)
+			{
+				if (err)
+					callback(err);
+				else
+				{
+					var data = req.body.Data;
 					db_tools.addExpense(row.key, data, function (err, key)
 					{
 						if (err)
-						{
-							res.status(500).send({ Error: "Unable to add expense" });
-						}
+							callback(err);
 						else
-						{
-							res.send({ Id: key });
-						}
-					})
-				});
-			}
+							res.send({ Result: { Id: key } });
+					});
+				}
+			});
 		},
 		
-		Edit: function (req, res)
+		Edit: function (req, res, callback)
 		{
-			if (!req.cookies["SESSIONID"])
+			this._checkUserLoggedIn(req, res, function (err, row)
 			{
-				res.status(401).send({ Result: "Unauthorized" });
-			}
-			else
-			{
-				db_tools.getUserBySessionId(req.cookies["SESSIONID"], function (err, row)
+				if (err)
+					callback(err);
+				else
 				{
-					if (err || !row)
-					{
-						if (err)
-							console.warn(err.message);
-						res.status(401).res.send({ Result: "Unauthorized" });
-						return;
-					}
-					var data = req.body;
-					delete data.Method;
+					var data = req.body.Data;
 					db_tools.editExpense(row.key, data, function (err, key)
 					{
 						if (err)
-						{
-							res.status(500).send({ Error: "Unable to edit expense" });
-						}
+							callback(err);
 						else
-						{
-							res.send({ Id: key });
-						}
-					})
-				});
-			}
+							res.send({ Result: { Id: key } });
+					});
+				}
+			});
 		},
 		
-		Get: function (req, res)
+		Get: function (req, res, callback)
 		{
-			if (!req.cookies["SESSIONID"])
+			this._checkUserLoggedIn(req, res, function (err, row)
 			{
-				res.status(401).send({ Result: "Unauthorized" });
-			}
-			else
-			{
-				db_tools.getUserBySessionId(req.cookies["SESSIONID"], function (err, row)
+				if (err)
+					callback(err);
+				else
 				{
-					if (err || !row)
-					{
-						if (err)
-							console.warn(err.message);
-						res.status(401).send({ Result: "Unauthorized" });
-						return;
-					}
-					var filter = req.body;
+					var filter = req.body.Data;
 					db_tools.getExpenses(row.key, filter, function (err, rows)
 					{
 						if (err)
-						{
-							res.status(500).send({ Error: "Unable to get expenses" });
-						}
+							callback(err);
 						else
 						{
 							var ret = [], data;
@@ -108,42 +90,30 @@ module.exports =
 								data.Id = rows[i].key;
 								ret.push(data);
 							}
-							res.send(ret);
+							res.send({ Result: ret });
 						}
-					})
-				});
-			}
+					});
+				}
+			});
 		},
 		
-		Remove: function (req, res)
+		Remove: function (req, res, callback)
 		{
-			if (!req.cookies["SESSIONID"])
+			this._checkUserLoggedIn(req, res, function (err, row)
 			{
-				res.status(401).res.send({ Result: "Unauthorized" });
-			}
-			else
-			{
-				db_tools.getUserBySessionId(req.cookies["SESSIONID"], function (err, row)
+				if (err)
+					callback(err);
+				else
 				{
-					if (err || !row)
+					var id = req.body.Data.Id;
+					db_tools.removeExpense(row.key, id, function (err)
 					{
 						if (err)
-							console.warn(err.message);
-						res.status(401).res.send({ Result: "Unauthorized" });
-						return;
-					}
-					db_tools.removeExpense(row.key, req.body.Id, function (err)
-					{
-						if (err)
-						{
-							res.status(500).send({ Error: "Unable to remove expense" });
-						}
+							callback(err);
 						else
-						{
-							res.send({ Id: req.body.Id });
-						}
-					})
-				});
-			}
+							res.send({ Result: { Id: id } });
+					});
+				}
+			});
 		}
 	};

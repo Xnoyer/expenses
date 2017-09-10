@@ -2,40 +2,49 @@ var db_tools = require("./db_tools.js");
 
 module.exports =
 	{
-		GetUsers: function (req, res)
+		_checkUserLoggedInAndAdmin: function (req, res, callback)
 		{
 			if (!req.cookies["SESSIONID"])
-			{
-				res.status(401).send({ Result: "Unauthorized" });
-			}
+				res.status(401).send({ Error: "Unauthorized" });
 			else
 			{
 				db_tools.getUserBySessionId(req.cookies["SESSIONID"], function (err, row)
 				{
-					if (err || !row)
+					if (err || !row || !row.key)
 					{
 						if (err)
-							console.warn(err.message);
-						res.status(401).send({ Result: "Unauthorized" });
+							callback(err);
+						else
+							res.status(401).send({ Error: "Unauthorized" });
 						return;
 					}
 					if (row.role < 3)
 					{
-						res.status(403).send({ Result: "Access Denied" });
+						res.status(403).send({ Error: "Access Denied" });
 						return;
 					}
+					callback(null, row);
+				});
+			}
+		},
+		
+		GetUsers: function (req, res, callback)
+		{
+			this._checkUserLoggedInAndAdmin(req, res, function (err, row)
+			{
+				if (err)
+					callback(err);
+				else
+				{
 					db_tools.getUsers(function (err, rows)
 					{
 						if (err)
-						{
-							res.status(500).send({ Error: "Unable to get users" });
-						}
+							callback(err);
 						else
 						{
 							var ret = [], user;
 							for (var i = 0; i < rows.length; i++)
 							{
-								
 								user = {
 									Key: rows[i].key,
 									Name: rows[i].name,
@@ -44,47 +53,29 @@ module.exports =
 								};
 								ret.push(user);
 							}
-							res.send(ret);
+							res.send({ Result: ret });
 						}
-					})
-				});
-			}
+					});
+				}
+			});
 		},
 		
-		RemoveUser: function (req, res)
+		RemoveUser: function (req, res, callback)
 		{
-			if (!req.cookies["SESSIONID"])
+			this._checkUserLoggedInAndAdmin(req, res, function (err, row)
 			{
-				res.status(401).res.send({ Result: "Unauthorized" });
-			}
-			else
-			{
-				db_tools.getUserBySessionId(req.cookies["SESSIONID"], function (err, row)
+				if (err)
+					callback(err);
+				else
 				{
-					if (err || !row)
+					db_tools.removeUser(req.body.Data.Key, function (err)
 					{
 						if (err)
-							console.warn(err.message);
-						res.status(401).res.send({ Result: "Unauthorized" });
-						return;
-					}
-					if (row.role < 3)
-					{
-						res.status(403).send({ Result: "Access Denied" });
-						return;
-					}
-					db_tools.removeUser(req.body.Key, function (err)
-					{
-						if (err)
-						{
-							res.status(500).send({ Error: "Unable to remove user" });
-						}
+							callback(err);
 						else
-						{
-							res.send({ Key: req.body.Key });
-						}
-					})
-				});
-			}
+							res.send({ Result: { Key: req.body.Data.Key } });
+					});
+				}
+			});
 		}
 	};

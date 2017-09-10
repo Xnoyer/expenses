@@ -31,16 +31,22 @@ function DBTools ()
 		}.bind(this));
 	};
 	
-	this.loginUser = function (userKey, sessionId)
+	this.loginUser = function (userKey, sessionId, callback)
 	{
 		if (!this._isOpened())
 			this._openDb();
-		this._db.run("INSERT INTO sessions (user, id, expiry_date) VALUES (?, ?, strftime('%s', 'now', '+1 day'))", [userKey, sessionId]);
+		this._db.run("INSERT INTO sessions (user, id, expiry_date) VALUES (?, ?, strftime('%s', 'now', '+1 day'))", [userKey, sessionId], function (err)
+		{
+			callback(err);
+		});
 	};
 	
-	this.expirySession = function (sessionId)
+	this.expirySession = function (sessionId, callback)
 	{
-		this._db.run("UPDATE sessions SET expiry_date = strftime('%s', 'now', '-1 day') WHERE id = ?", [sessionId]);
+		this._db.run("UPDATE sessions SET expiry_date = strftime('%s', 'now', '-1 day') WHERE id = ?", [sessionId], function (err)
+		{
+			callback(err);
+		});
 	};
 	
 	this.checkAndProlongSession = function (sessionId, callback)
@@ -51,24 +57,24 @@ function DBTools ()
 		this._db.get("SELECT user FROM sessions WHERE id = ? AND expiry_date > strftime('%s', 'now');", [sessionId], function (err, row)
 		{
 			if (err)
-			{
-				console.error("Error querying database", err);
-				throw new Error(err);
-			}
-			if (!row)
-				callback(new Error("Session not found or expired"));
+				callback(err);
 			else
 			{
-				self._db.get("SELECT * FROM users WHERE key = ?", [row.user], function (err, row)
+				if (!row)
+					callback(new Error("Session not found or expired"));
+				else
 				{
-					if (err)
+					self._db.get("SELECT * FROM users WHERE key = ?", [row.user], function (err, row)
 					{
-						console.error("Error querying database", err);
-						throw new Error(err);
-					}
-					self._db.run("UPDATE sessions SET expiry_date = strftime('%s', 'now', '+1 day') WHERE id = ?", [sessionId]);
-					callback(null, row);
-				});
+						if (err)
+							callback(err);
+						else
+						{
+							self._db.run("UPDATE sessions SET expiry_date = strftime('%s', 'now', '+1 day') WHERE id = ?", [sessionId]);
+							callback(null, row);
+						}
+					});
+				}
 			}
 		});
 	};
@@ -80,11 +86,9 @@ function DBTools ()
 		this._db.get("SELECT * FROM users WHERE login = ? AND password = ?;", [login, passwordHash], function (err, row)
 		{
 			if (err)
-			{
-				console.error("Error querying database", err);
-				throw new Error(err);
-			}
-			callback(row);
+				callback(err);
+			else
+				callback(null, row);
 		});
 	};
 	
@@ -95,11 +99,9 @@ function DBTools ()
 		this._db.get("SELECT users.key, login, role, sessions.id FROM users, sessions WHERE sessions.user = users.key AND sessions.id = ? AND expiry_date > strftime('%s', 'now');", [sessionId], function (err, row)
 		{
 			if (err)
-			{
-				console.error("Error querying database", err);
-				throw new Error(err);
-			}
-			callback(null, row);
+				callback(err);
+			else
+				callback(null, row);
 		});
 	};
 	
@@ -111,34 +113,29 @@ function DBTools ()
 		this._db.get("SELECT key FROM users WHERE login = ?;", [login], function (err, row)
 		{
 			if (err)
-			{
-				console.error("Error querying database", err);
-				throw new Error(err);
-			}
-			if (row)
-				callback(new Error("Login is not unique for login [" + login + "]"));
+				callback(err);
 			else
 			{
-				self._db.run("INSERT INTO users (name, login, password, role) VALUES (?, ?, ?, ?)", [name, login, passwordHash, roleKey], function (err)
+				if (row)
+					callback(new Error("Login is not unique for login [" + login + "]"));
+				else
 				{
-					if (err)
+					self._db.run("INSERT INTO users (name, login, password, role) VALUES (?, ?, ?, ?)", [name, login, passwordHash, roleKey], function (err)
 					{
-						console.error("Error querying database", err);
-						throw new Error(err);
-					}
-					else
-					{
-						self._db.get("SELECT * FROM users WHERE login = ? AND password = ?;", [login, passwordHash], function (err, row)
+						if (err)
+							callback(err);
+						else
 						{
-							if (err)
+							self._db.get("SELECT * FROM users WHERE login = ? AND password = ?;", [login, passwordHash], function (err, row)
 							{
-								console.error("Error querying database", err);
-								throw new Error(err);
-							}
-							callback(null, row);
-						});
-					}
-				});
+								if (err)
+									callback(err);
+								else
+									callback(null, row);
+							});
+						}
+					});
+				}
 			}
 		});
 	};
@@ -153,11 +150,9 @@ function DBTools ()
 		this._db.run("INSERT INTO expenses (user, datetime, data) VALUES (?, ?, ?);", [userId, date, JSON.stringify(data)], function (err)
 		{
 			if (err)
-			{
-				console.error("Error querying database", err);
-				throw new Error(err);
-			}
-			callback(null, this.lastID);
+				callback(err);
+			else
+				callback(null, this.lastID);
 		});
 	};
 	
@@ -171,11 +166,9 @@ function DBTools ()
 		this._db.run("UPDATE expenses SET datetime = ?, data = ? WHERE user = ? AND key = ?", [date, JSON.stringify(data), userId, key], function (err)
 		{
 			if (err)
-			{
-				console.error("Error querying database", err);
-				throw new Error(err);
-			}
-			callback(null, key);
+				callback(err);
+			else
+				callback(null, key);
 		});
 	};
 	
@@ -186,11 +179,9 @@ function DBTools ()
 		this._db.run("DELETE FROM expenses WHERE user = ? AND key = ?;", [userId, key], function (err)
 		{
 			if (err)
-			{
-				console.error("Error querying database", err);
-				throw new Error(err);
-			}
-			callback(null);
+				callback(err);
+			else
+				callback(null);
 		});
 	};
 	
@@ -198,9 +189,7 @@ function DBTools ()
 	{
 		if (!this._isOpened())
 			this._openDb();
-		var self = this;
-		
-		var statement;
+		var self = this, statement;
 		
 		if (!filter || !filter.StartDate || !filter.EndDate)
 			statement = this._db.prepare("SELECT key, datetime, data FROM expenses WHERE user = ?;", [userId]);
@@ -210,11 +199,9 @@ function DBTools ()
 		statement.all(function (err, row)
 		{
 			if (err)
-			{
-				console.error("Error querying database", err);
-				throw new Error(err);
-			}
-			callback(null, row);
+				callback(err);
+			else
+				callback(null, row);
 		});
 	};
 	
@@ -227,11 +214,9 @@ function DBTools ()
 		this._db.all("SELECT key, name, login, role FROM users;", function (err, row)
 		{
 			if (err)
-			{
-				console.error("Error querying database", err);
-				throw new Error(err);
-			}
-			callback(null, row);
+				callback(err);
+			else
+				callback(null, row);
 		});
 	};
 	
@@ -242,11 +227,9 @@ function DBTools ()
 		this._db.run("DELETE FROM users WHERE key = ?;", [key], function (err)
 		{
 			if (err)
-			{
-				console.error("Error querying database", err);
-				throw new Error(err);
-			}
-			callback(null);
+				callback(err);
+			else
+				callback(null);
 		});
 	};
 }

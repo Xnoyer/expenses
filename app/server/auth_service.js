@@ -2,104 +2,121 @@ var db_tools = require("./db_tools.js");
 var crypto = require('crypto');
 var hash;
 
-module.exports = 
-{
-	_encryptPassword: function (password)
+module.exports =
 	{
-		hash = crypto.createHash('sha256');
-		return hash.update(password).digest('hex');
-	},
-	
-	CheckAuth: function (req, res)
-	{
-		if (!req.cookies["SESSIONID"])
+		_encryptPassword: function (password)
 		{
-			res.status(401);
-			res.send({ Result: "Unauthorized" });
-		}
-		else
-		{
-			db_tools.checkAndProlongSession(req.cookies["SESSIONID"], function (err, row)
-			{
-				if (err)
-				{
-					res.status(401);
-					res.send({ Result: "Unauthorized" });
-				}
-				else
-				{
-					var user = { Login: row.login, Name: row.name, Role: row.role, Key: row.key };
-					console.log("User still logged in for login [" + row.login + "], Session ID is [" + req.cookies["SESSIONID"] + ']');
-					res.cookie("SESSIONID", req.cookies["SESSIONID"], { maxAge: 24 * 60 * 60 * 1000, httpOnly: true });
-					res.send(user);
-				}
-			});
-		}
-	},
-	
-	Auth: function (req, res)
-	{
-		var login = req.body.Login,
-			password = req.body.Password;
+			hash = crypto.createHash('sha256');
+			return hash.update(password).digest('hex');
+		},
 		
-		db_tools.getUserByCredentials(login, this._encryptPassword(password), function (row)
+		CheckAuth: function (req, res, callback)
 		{
-			if (row)
-			{
-				var user = { Login: row.login, Name: row.name, Role: row.role, Key: row.key };
-				hash = crypto.createHash('sha256');
-				var sessionId = hash.update(new Date().getTime().toString()).digest("hex");
-				db_tools.loginUser(user.Key, sessionId);
-				console.log("User login succeeded for login [" + login + "], Session ID is [" + sessionId + ']');
-				res.cookie("SESSIONID", sessionId, { maxAge: 24 * 60 * 60 * 1000, httpOnly: true });
-				res.send(user);
-			}
+			if (!req.cookies["SESSIONID"])
+				res.send({ Result: "Unauthorized" });
 			else
 			{
-				console.warn("User not found for login [" + login + "]");
-				res.status(401);
-				res.send({ Result: "Unauthorized" });
+				db_tools.checkAndProlongSession(req.cookies["SESSIONID"], function (err, row)
+				{
+					if (err)
+						callback(err);
+					else
+					{
+						var user = { Login: row.login, Name: row.name, Role: row.role, Key: row.key };
+						console.log("User still logged in for login [" + row.login + "], Session ID is [" + req.cookies["SESSIONID"] + ']');
+						res.cookie("SESSIONID", req.cookies["SESSIONID"], { maxAge: 24 * 60 * 60 * 1000, httpOnly: true });
+						res.send({ Result: user });
+					}
+				});
 			}
-		})
-	},
-	
-	Register: function (req, res)
-	{
-		var name = req.body.Name,
-			login = req.body.Login,
-			password = req.body.Password;
+		},
 		
-		db_tools.tryCreateUser(name, login, this._encryptPassword(password), 1 /* simple user role */, function (err, row)
+		Auth: function (req, res, callback)
 		{
-			if (err)
+			var data = req.body.Data,
+				login = data.Login,
+				password = data.Password;
+			
+			db_tools.getUserByCredentials(login, this._encryptPassword(password), function (err, row)
 			{
-				console.warn(err.message);
-				res.status(401);
-				res.send({ Result: "Unauthorized" });
-				return;
+				if(err)
+					callback(err);
+				else
+				{
+					if (row)
+					{
+						var user = { Login: row.login, Name: row.name, Role: row.role, Key: row.key };
+						hash = crypto.createHash('sha256');
+						var sessionId = hash.update(new Date().getTime().toString()).digest("hex");
+						db_tools.loginUser(user.Key, sessionId, function (err)
+						{
+							if(err)
+								callback(err);
+							else
+							{
+								console.log("User login succeeded for login [" + login + "], Session ID is [" + sessionId + ']');
+								res.cookie("SESSIONID", sessionId, { maxAge: 24 * 60 * 60 * 1000, httpOnly: true });
+								res.send({ Result: user });
+							}
+						});
+					}
+					else
+					{
+						console.warn("User not found for login [" + login + "]");
+						res.status(401).send({ Error: "Unauthorized" });
+					}
+				}
+			});
+		},
+		
+		Register: function (req, res, callback)
+		{
+			var data = req.body.Data,
+				name = data.Name,
+				login = data.Login,
+				password = data.Password;
+			
+			db_tools.tryCreateUser(name, login, this._encryptPassword(password), 1 /* simple user role */, function (err, row)
+			{
+				if (err)
+					callback(err);
+				else
+				{
+					var user = { Login: login, Name: name, Role: row.role, Key: row.key };
+					hash = crypto.createHash('sha256');
+					var sessionId = hash.update(new Date().getTime().toString()).digest("hex");
+					db_tools.loginUser(user.Key, sessionId, function (err)
+					{
+						if(err)
+							callback(err);
+						else
+						{
+							console.log("User created successfully for login [" + login + "], Session ID is [" + sessionId + ']');
+							res.cookie("SESSIONID", sessionId, { maxAge: 24 * 60 * 60 * 1000, httpOnly: true });
+							res.send({ Result: user });
+						}
+					});
+				}
+			});
+		},
+		
+		Logout: function (req, res, callback)
+		{
+			if (!req.cookies["SESSIONID"])
+				res.status(403).send({ Error: "WasNotAuthorized" });
+			else
+			{
+				var sessionId = req.cookies["SESSIONID"];
+				db_tools.expirySession(sessionId, function(err)
+				{
+					if(err)
+						callback(err)
+					else
+					{
+						res.clearCookie('SESSIONID');
+						res.send({ Result: "Success" });
+					}
+				});
 			}
-			var user = { Login: login, Name: name, Role: row.role, Key: row.key };
-			hash = crypto.createHash('sha256');
-			var sessionId = hash.update(new Date().getTime().toString()).digest("hex");
-			db_tools.loginUser(user.Key, sessionId);
-			console.log("User created successfully for login [" + login + "], Session ID is [" + sessionId + ']');
-			res.cookie("SESSIONID", sessionId, { maxAge: 24 * 60 * 60 * 1000, httpOnly: true });
-			res.send(user);
-		})
-	},
-	
-	Logout: function (req, res)
-	{
-		if (!req.cookies["SESSIONID"])
-		{
-			res.send({ Result: "WasNotAuthorized" });
 		}
-		else
-		{
-			var sessionId = req.cookies["SESSIONID"];
-			db_tools.expirySession(sessionId);
-			res.clearCookie('SESSIONID');
-			res.send({ Result: "Success" });
-		}
-	}
-};
+	};

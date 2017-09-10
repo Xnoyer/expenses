@@ -34,23 +34,31 @@ app.use(function (req, res, next) {
 app.use(bodyParser.json());
 app.use(cookieParser());
 app.post('/Service/*', function (req, res) {
-	var path = req.path, method;
+	var path = req.path, method, callback;
 	path = path.split("/");
-	if(path[1] === "Service")
+	
+	method = req.body.Method;
+	callback = function (err)
+	{
+		if (err)
+		{
+			var msg = "Unable to " + method + " on " + path[2] + " service. Error: " + err.message;
+			res.status(500).send({ Error: msg });
+			console.log(msg);
+		}
+	};
+	if (path[1] === "Service")
 	{
 		switch (path[2])
 		{
 			case "Auth":
-				method = req.body.Method;
-				authService[method](req, res);
+				authService[method](req, res, callback);
 				break;
 			case "Expense":
-				method = req.body.Method;
-				expenseService[method](req, res);
+				expenseService[method](req, res, callback);
 				break;
 			case "Admin":
-				method = req.body.Method;
-				adminService[method](req, res);
+				adminService[method](req, res, callback);
 				break;
 		}
 	}
@@ -61,9 +69,4 @@ app.post('/Service/*', function (req, res) {
 app.listen(port, function ()
 {
 	console.log('Example app listening on port 3000!');
-});
-
-app.listen(8080, "192.168.0.126", function ()
-{
-	console.log('Example app listening on port 8080!');
 });

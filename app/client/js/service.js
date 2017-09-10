@@ -5,17 +5,34 @@ function Service ()
 
 var proto = Service.prototype;
 
-proto.sendPost = function (url, headers, body) {
-
-	return new Promise(function (resolve, reject) {
+proto.sendPost = function (url, headers, body)
+{
+	return new Promise(function (resolve, reject)
+	{
 		var xhr = new XMLHttpRequest();
-		xhr.onreadystatechange = function () {
+		xhr.onreadystatechange = function ()
+		{
 			if (this.readyState === 4)
 			{
+				var json = JSON.parse(this.responseText);
 				if (this.status === 200)
-					resolve({ ResponseText: this.responseText, ResponseJSON: JSON.parse(this.responseText) });
+				{
+					resolve(
+						{
+							ResponseText: this.responseText,
+							ResponseJSON: json.Result
+						});
+				}
 				else
-					reject({ ResponseText: this.responseText, ResponseJSON: JSON.parse(this.responseText), Status: this.status, Url: url });
+				{
+					reject(
+						{
+							ResponseText: this.responseText,
+							ResponseJSON: json.Result || json.Error,
+							Status: this.status,
+							Url: url
+						});
+				}
 			}
 		};
 		xhr.open("POST", url, true);
@@ -30,7 +47,7 @@ proto.sendPost = function (url, headers, body) {
 
 proto.AuthService = function (method, data)
 {
-	data = data || {};
+	data = { Data: data || {} };
 	data.Method = method;
 	return this.sendPost("/Service/Auth", [{
 		Name: "Content-Type",
@@ -40,7 +57,7 @@ proto.AuthService = function (method, data)
 
 proto.ExpenseService = function (method, data)
 {
-	data = data || {};
+	data = { Data: data || {} };
 	data.Method = method;
 	return this.sendPost("/Service/Expense", [{
 		Name: "Content-Type",
@@ -50,7 +67,7 @@ proto.ExpenseService = function (method, data)
 
 proto.AdminService = function (method, data)
 {
-	data = data || {};
+	data = { Data: data || {} };
 	data.Method = method;
 	return this.sendPost("/Service/Admin", [{
 		Name: "Content-Type",

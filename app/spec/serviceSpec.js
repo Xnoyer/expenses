@@ -25,8 +25,10 @@ describe("App Service Test", function ()
 			method: 'POST',
 			json: {
 				Method: "Auth",
-				Login: "illegal",
-				Password: "nopassword"
+				Data: {
+					Login: "illegal",
+					Password: "nopassword"
+				}
 			}
 		};
 		
@@ -36,13 +38,15 @@ describe("App Service Test", function ()
 		{
 			expect(err).toBeNull();
 			expect(res.statusCode).toBe(401);
-			expect(body.Result).toBeDefined();
-			expect(body.Result).toBe("Unauthorized");
+			expect(body.Error).toBeDefined();
+			expect(body.Error).toBe("Unauthorized");
 			
 			options.json = {
 				Method: "Auth",
-				Login: "user",
-				Password: "1"
+				Data: {
+					Login: "user",
+					Password: "1"
+				}
 			};
 			request(options, function (err, res, body)
 			{
@@ -51,7 +55,8 @@ describe("App Service Test", function ()
 				expect(res.headers['set-cookie']).toBeDefined();
 				var sid = res.headers['set-cookie'][0];
 				expect(sid).toBeDefined();
-				expect(body.Login).toBe("user");
+				expect(body.Result).toBeDefined();
+				expect(body.Result.Login).toBe("user");
 				
 				options.json = {
 					Method: "CheckAuth"
@@ -60,7 +65,8 @@ describe("App Service Test", function ()
 				{
 					expect(err).toBeNull();
 					expect(res.statusCode).toBe(200);
-					expect(body.Login).toBe("user");
+					expect(body.Result).toBeDefined();
+					expect(body.Result.Login).toBe("user");
 					
 					options.json = {
 						Method: "Logout"
@@ -75,9 +81,9 @@ describe("App Service Test", function ()
 						request(options, function (err, res, body)
 						{
 							expect(err).toBeNull();
-							expect(res.statusCode).toBe(200);
-							expect(body.Result).toBeDefined();
-							expect(body.Result).toBe("WasNotAuthorized");
+							expect(res.statusCode).toBe(403);
+							expect(body.Error).toBeDefined();
+							expect(body.Error).toBe("WasNotAuthorized");
 							done();
 						});
 					});
@@ -95,9 +101,11 @@ describe("App Service Test", function ()
 			method: 'POST',
 			json: {
 				Method: "Register",
-				Name: "Temp User",
-				Login: "tmpuser",
-				Password: "tmp"
+				Data: {
+					Name: "Temp User",
+					Login: "tmpuser",
+					Password: "tmp"
+				}
 			}
 		};
 		
@@ -108,8 +116,9 @@ describe("App Service Test", function ()
 			expect(err).toBeNull();
 			expect(res.statusCode).toBe(200);
 			expect(res.headers['set-cookie']).toBeDefined();
-			expect(body.Login).toBe("tmpuser");
-			tempUser = body;
+			expect(body.Result).toBeDefined();
+			expect(body.Result.Login).toBe("tmpuser");
+			tempUser = body.Result;
 			done();
 		});
 	});
@@ -121,10 +130,12 @@ describe("App Service Test", function ()
 			method: 'POST',
 			json: {
 				Method: "Add",
-				Description: "Description",
-				Comment: "Comment",
-				Value: 100500,
-				Date: Math.floor(Date.now() / 1000)
+				Data: {
+					Description: "Description",
+					Comment: "Comment",
+					Value: 100500,
+					Date: Math.floor(Date.now() / 1000)
+				}
 			}
 		};
 		
@@ -134,30 +145,34 @@ describe("App Service Test", function ()
 		{
 			expect(err).toBeNull();
 			expect(res.statusCode).toBe(200);
-			expect(body.Id).toBeDefined();
-			expect(body.Id).toBeGreaterThan(0);
+			expect(body.Result).toBeDefined();
+			expect(body.Result.Id).toBeDefined();
+			expect(body.Result.Id).toBeGreaterThan(0);
 			
 			options.json = {
 				Method: "Get"
 			};
-			var addedId = body.Id;
+			var addedId = body.Result.Id;
 			request(options, function (err, res, body)
 			{
 				expect(err).toBeNull();
 				expect(res.statusCode).toBe(200);
-				expect(body.length).toBeDefined();
-				expect(body.length).toBeGreaterThan(0);
+				expect(body.Result.length).toBeDefined();
+				expect(body.Result.length).toBeGreaterThan(0);
 				
 				options.json = {
 					Method: "Remove",
-					Id: addedId
+					Data: {
+						Id: addedId
+					}
 				};
 				request(options, function (err, res, body)
 				{
 					expect(err).toBeNull();
 					expect(res.statusCode).toBe(200);
-					expect(body.Id).toBeDefined();
-					expect(body.Id).toBe(addedId);
+					expect(body.Result).toBeDefined();
+					expect(body.Result.Id).toBeDefined();
+					expect(body.Result.Id).toBe(addedId);
 					done();
 				});
 			});
@@ -171,8 +186,10 @@ describe("App Service Test", function ()
 			method: 'POST',
 			json: {
 				Method: "Auth",
-				Login: "admin",
-				Password: "admin"
+				Data: {
+					Login: "admin",
+					Password: "admin"
+				}
 			}
 		};
 		
@@ -182,8 +199,9 @@ describe("App Service Test", function ()
 		{
 			expect(err).toBeNull();
 			expect(res.statusCode).toBe(200);
-			expect(body.Login).toBe("admin");
-			expect(body.Role).toBe(3);
+			expect(body.Result).toBeDefined();
+			expect(body.Result.Login).toBe("admin");
+			expect(body.Result.Role).toBe(3);
 			
 			options.uri = url + "Service/Admin";
 			options.json = {
@@ -194,20 +212,23 @@ describe("App Service Test", function ()
 			{
 				expect(err).toBeNull();
 				expect(res.statusCode).toBe(200);
-				expect(body.length).toBeDefined();
-				expect(body.length).toBeGreaterThan(2); //user, admin & temp
+				expect(body.Result).toBeDefined();
+				expect(body.Result.length).toBeGreaterThan(2); //user, admin & temp
 				
 				options.json = {
 					Method: "RemoveUser",
-					Key: tempUser.Key
+					Data: {
+						Key: tempUser.Key
+					}
 				};
 				
 				request(options, function (err, res, body)
 				{
 					expect(err).toBeNull();
 					expect(res.statusCode).toBe(200);
-					expect(body.Key).toBeDefined();
-					expect(body.Key).toBe(tempUser.Key);
+					expect(body.Result).toBeDefined();
+					expect(body.Result.Key).toBeDefined();
+					expect(body.Result.Key).toBe(tempUser.Key);
 					done();
 				});
 			});
