@@ -9,6 +9,9 @@
 
 	<script src="08_Print_All_Positive_Integer_Solutions.js"></script>
 	<script src="09_Find_Element_In_2_Arrays.js"></script>
+	<script src="10_Check_Value_Of_A_Binary_Number.js"></script>
+	<script src="11_Draw_A_Circle.js"></script>
+	<script src="12_String_Permutation.js"></script>
 	<meta charset="UTF-8">
 	<title>Algorithmic</title>
 	<style>
@@ -31,6 +34,9 @@
 
 <div id="08" style="height: 100px; overflow: auto" class="task"></div>
 <div id="09" class="task"></div>
+<div id="10" class="task"></div>
+<div id="11" class="task"></div>
+<div id="12" class="task"></div>
 
 
 <script>
@@ -147,6 +153,34 @@
 		domNode.innerHTML += "[" + arr1.join(", ") + "]<br/>";
 		domNode.innerHTML += "[" + arr2.join(", ") + "]<br/>";
 		domNode.innerHTML += "Commons are [" + findCommon(arr1, arr2) + "]";
+	})();
+
+	//10
+
+	(function ()
+	{
+		var domNode = document.getElementById("10");
+		domNode.innerHTML = "Is the number '1010011010' equal to '0x29A':<br />";
+
+		domNode.innerHTML += "Equal? - " + binaryEqualsHex('1010011010', '0x29A');
+	})();
+
+	//11
+
+	(function ()
+	{
+		var domNode = document.getElementById("11");
+		drawCircle(50, domNode);
+	})();
+
+	//12
+
+	(function ()
+	{
+		var domNode = document.getElementById("12");
+		domNode.innerHTML = "Is the string 'blabla' is a permutated 'albbal'?:<br />";
+
+		domNode.innerHTML += " = " + checkStringPermutation('blabla', 'albbal');
 	})();
 
 </script>
