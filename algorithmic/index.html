@@ -12,6 +12,8 @@
 	<script src="10_Check_Value_Of_A_Binary_Number.js"></script>
 	<script src="11_Draw_A_Circle.js"></script>
 	<script src="12_String_Permutation.js"></script>
+	<script src="13_Sorted_Merge.js"></script>
+	<script src="14_Largest_Subarray_Sum.js"></script>
 	<meta charset="UTF-8">
 	<title>Algorithmic</title>
 	<style>
@@ -37,9 +39,18 @@
 <div id="10" class="task"></div>
 <div id="11" class="task"></div>
 <div id="12" class="task"></div>
+<div id="13" class="task"></div>
+<div id="14" class="task"></div>
+<div id="15" class="task"></div>
 
 
 <script>
+
+	function random (width, start)
+	{
+		start = start || 0;
+		return Math.floor(Math.random() * width + start);
+	}
 
 	(function ()
 	{
@@ -181,6 +192,63 @@
 		domNode.innerHTML = "Is the string 'blabla' is a permutated 'albbal'?:<br />";
 
 		domNode.innerHTML += " = " + checkStringPermutation('blabla', 'albbal');
+	})();
+
+	//13
+
+	(function ()
+	{
+		var domNode = document.getElementById("13");
+		domNode.innerHTML = "Sorted merge of two arrays with buffer in one:<br />";
+		var arrWBuffer = [random(100), random(100), random(100), random(100), random(100)];
+		arrWBuffer.length = 10;
+		arrWBuffer.sort(function (a, b)
+		{
+			return a - b;
+		});
+		var arr2 = [random(100), random(100), random(100), random(100), random(100)];
+		arr2.sort(function (a, b)
+		{
+			return a - b;
+		});
+		domNode.innerHTML += "Array 1 is " + arrWBuffer.join(", ") + "<br />";
+		domNode.innerHTML += "Array 2 is " + arr2.join(", ") + "<br />";
+		domNode.innerHTML += "Result is " + sortedMerge(arrWBuffer, arr2).join(", ");
+	})();
+
+	//14
+
+	(function ()
+	{
+		var domNode = document.getElementById("14"),
+			arr = [-2, -3, 4, -1, -2, 1, 5, -3, -1, 5, -1, -10, 2, 7, -3, -2];
+		domNode.innerHTML = "Find largest sum of subarray of array:" + arr.join(", ") + "<br />";
+		var res = largestSum(arr);
+		domNode.innerHTML += "Result = " + res.Sum + "<br /> in bounds [" + res.Bounds.join(", ") + "] = ";
+		domNode.innerHTML += arr.slice(res.Bounds[0], res.Bounds[1]).join(", ");
+	})();
+
+	//15
+
+	(function ()
+	{
+		var domNode = document.getElementById("15");
+		domNode.innerHTML = "Find sum of two numbers without using any arithmetic operators<br />";
+		domNode.innerHTML += "First way is a bitwise:<br />";
+		function getSum(p, q)
+		{
+			var right = p ^ q;
+			var left = (p & q) << 1;
+			if (left !== 0) {
+				return getSum(right, left);
+			}
+			return right;
+		}
+		domNode.innerHTML += getSum(10, 11) + "<br />";
+		domNode.innerHTML += "The second one is a trick (no arithmetic):<br />";
+		var x = new Array(10),
+			y = new Array(11);
+		domNode.innerHTML += x.concat(y).length;
 	})();
 
 </script>
