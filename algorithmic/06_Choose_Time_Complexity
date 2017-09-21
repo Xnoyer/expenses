@@ -1,0 +1,2 @@
+O(N) is equivalent to O(2N)
+It's because all constants in Big-O notation is ignored. O(1) is equal to O(2) because it has fixed amount of instructions, so this fixed amound may be ignored in more complex equations
