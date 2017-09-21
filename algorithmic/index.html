@@ -14,6 +14,7 @@
 	<script src="12_String_Permutation.js"></script>
 	<script src="13_Sorted_Merge.js"></script>
 	<script src="14_Largest_Subarray_Sum.js"></script>
+	<script src="16_Baby_Names.js"></script>
 	<meta charset="UTF-8">
 	<title>Algorithmic</title>
 	<style>
@@ -22,6 +23,14 @@
 			margin: 24px 0;
 			padding: 12px;
 			border: 1px solid #6c6c6c;
+		}
+
+		.task::before
+		{
+			content: 'Task #' attr(id);
+			border-bottom: 1px solid #6c6c6c;
+			display: block;
+			margin-bottom: 4px;
 		}
 	</style>
 </head>
@@ -42,7 +51,8 @@
 <div id="13" class="task"></div>
 <div id="14" class="task"></div>
 <div id="15" class="task"></div>
-
+<div id="16" class="task"></div>
+<div id="17" class="task"></div>
 
 <script>
 
@@ -251,6 +261,68 @@
 		domNode.innerHTML += x.concat(y).length;
 	})();
 
+	//16
+
+	(function ()
+	{
+		var print = function (obj, node)
+		{
+			var print = [];
+			for (i in obj)
+			{
+				if (!obj.hasOwnProperty(i))
+					continue;
+				print.push(i + " (" + obj[i] + ")");
+			}
+			node.innerHTML += print.join(", ") + "<br/>";
+		};
+		var domNode = document.getElementById("16"),
+			namesObj = {
+				"John": 15,
+				"Jon": 12,
+				"Chris": 13,
+				"Kris": 4,
+				"Christopher": 19,
+				"Johnny": 5,
+				"Sara": 10,
+				"Sarah": 11,
+				"Abby": 1,
+				"Abbie": 5,
+				"Abigail": 13,
+				"Abi": 3
+			},
+			synonyms = [["Jon", "John"], ["John", "Johnny"], ["Chris", "Kris"], ["Chris", "Christopher"], ["Sara", "Sarah"], ["Abigail", "Abby"], ["Abbie", "Abby"], ["Abi", "Abigail"]];
+		domNode.innerHTML = "Aggregating the names frequency by given synonyms list<br />";
+		domNode.innerHTML += "Initial name list is:<br />";
+		print(namesObj, domNode);
+		var resolver = new NameResolver(synonyms);
+		var result = resolver.parseNames(namesObj);
+		domNode.innerHTML += "Aggregation result is:<br />";
+		print(result, domNode);
+	})();
+
+	//17
+
+	(function ()
+	{
+		var domNode = document.getElementById("17");
+		domNode.innerHTML = "Check number is a power of 2<br />";
+		domNode.innerHTML += "First way is simple using of JS inner function Math.log2<br />";
+
+		function isPowerOfTwo (num)
+		{
+			return !(Math.log2(num) % 1);
+		}
+
+		domNode.innerHTML += "isPowerOfTwo(64) = " + isPowerOfTwo(64) + "<br />";
+		domNode.innerHTML += "isPowerOfTwo(75) = " + isPowerOfTwo(75) + "<br />";
+		domNode.innerHTML += "The second one is bitwise:<br />";
+		domNode.innerHTML += "As we know each power of two in binary will look like (1 + {as many 0's as power is}). For example 64 is 2^6, so it will be 1000000<br />";
+		domNode.innerHTML += "so if we decrease this number by 1 we'll get (01 + {as many 1's as power is}). For example 63 (64 - 1) is 2^6 - 1, so it will be 0111111<br />";
+		domNode.innerHTML += "now we should perform bitwise AND. If result is equal to 0, te number is power of two<br/>";
+		domNode.innerHTML += "is (64 & (64 - 1)) equal to 0? = " + ((64 & (64 - 1)) === 0) + "<br />";
+		domNode.innerHTML += "is (75 & (75 - 1)) equal to 0? = " + ((75 & (75 - 1)) === 0) + "<br />";
+	})();
 </script>
 
 </body>
