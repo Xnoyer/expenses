@@ -1,6 +1,7 @@
 var sqlite3 = require('sqlite3').verbose();
 var fs = require('fs');
-fs.mkdirSync('db');
+if (!fs.existsSync('db'))
+	fs.mkdirSync('db');
 var db = new sqlite3.Database('db/database.sqlite');
 
 db.serialize(function () {

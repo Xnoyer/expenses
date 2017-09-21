@@ -94,6 +94,11 @@ var AdminCtrl = require('./admin_controls/admin_ctrl.js');
 				}
 			}
 			app.drawInterface();
+		}).catch(function (e)
+		{
+			app.state.Authorized = false;
+			app.state.User = null;
+			app.drawInterface();
 		});
 	}
 	

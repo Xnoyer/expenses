@@ -110,7 +110,7 @@ module.exports =
 				db_tools.expirySession(sessionId, function(err)
 				{
 					if(err)
-						callback(err)
+						callback(err);
 					else
 					{
 						res.clearCookie('SESSIONID');
