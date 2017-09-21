@@ -15,6 +15,9 @@
 	<script src="13_Sorted_Merge.js"></script>
 	<script src="14_Largest_Subarray_Sum.js"></script>
 	<script src="16_Baby_Names.js"></script>
+	<script src="18_Longest_Word.js"></script>
+	<script src="19_Detect_And_Remove_Loop.js"></script>
+	<script src="20_Max_Height_Of_A_Tree.js"></script>
 	<meta charset="UTF-8">
 	<title>Algorithmic</title>
 	<style>
@@ -53,6 +56,9 @@
 <div id="15" class="task"></div>
 <div id="16" class="task"></div>
 <div id="17" class="task"></div>
+<div id="18" class="task"></div>
+<div id="19" class="task"></div>
+<div id="20" class="task"></div>
 
 <script>
 
@@ -247,6 +253,7 @@
 		domNode.innerHTML += "First way is a bitwise:<br />";
 		function getSum(p, q)
 		{
+			//Using a half adder with shift
 			var right = p ^ q;
 			var left = (p & q) << 1;
 			if (left !== 0) {
@@ -323,6 +330,69 @@
 		domNode.innerHTML += "is (64 & (64 - 1)) equal to 0? = " + ((64 & (64 - 1)) === 0) + "<br />";
 		domNode.innerHTML += "is (75 & (75 - 1)) equal to 0? = " + ((75 & (75 - 1)) === 0) + "<br />";
 	})();
+
+	//18
+
+	(function ()
+	{
+		var domNode = document.getElementById("18"),
+			arr = ["cat", "banana", "catbananawalker", "dog", "nana", "walk", "walker", "dogwalker"];
+		domNode.innerHTML = "Find longest word made of other words in array:" + arr.join(", ") + "<br />";
+		var res = findLongestWord(arr);
+		domNode.innerHTML += "Result = " + res;
+	})();
+
+	//19
+
+	(function ()
+	{
+		var print = function (list, node)
+		{
+			var print = [list.data],
+				counter = 0;
+			while (list.next)
+			{
+				counter++;
+				if (counter > 20)
+				{
+					print.push("{LIMIT EXCEEDED. LIST MAY HAVE A LOOP}");
+					break;
+				}
+				print.push(list.next.data);
+				list = list.next;
+			}
+			node.innerHTML += print.join(" -> ") + "<br/>";
+		};
+		var domNode = document.getElementById("19"),
+			list = new Node(1);
+		list.next = new Node(2);
+		list.next.next = new Node(3);
+		list.next.next.next = new Node(4);
+		list.next.next.next.next = new Node(5);
+		list.next.next.next.next.next = list.next;//loop
+
+		domNode.innerHTML = "Find and remove loop from linked list:<br />";
+		print(list, domNode);
+		var res = detectAndRemoveLoop(list);
+		domNode.innerHTML += "Loop found and removed? - " + res + "<br/>";
+		domNode.innerHTML += "List after cleaning:<br/>";
+		print(list, domNode);
+	})();
+
+	//18
+
+	(function ()
+	{
+		var domNode = document.getElementById("20"),
+			tree = new TreeNode(1);
+		tree.childs = [new TreeNode(2), new TreeNode(3)];
+		tree.childs[0].childs = [new TreeNode(4), new TreeNode(5)];
+		tree.childs[0].childs[1].childs = [new TreeNode(6), null];
+		domNode.innerHTML = "Find max height of tree<br />";
+		var res = maxHeightOfTree(tree);
+		domNode.innerHTML += "Result = " + res;
+	})();
+
 </script>
 
 </body>

@@ -13,6 +13,7 @@ function drawCircle (r, node)
 		for (j = 0; j < r * 2; j++)
 		{
 			y = j - r;
+			//x and y are sides of a triangle and r is this triangle's hypotenuse
 			if (x * x + y * y < r * r)
 				points.push([x, y]);
 		}

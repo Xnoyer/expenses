@@ -4,7 +4,9 @@
   "description": "Test task for Akvelon",
   "main": "server/backend",
   "scripts": {
-	"test": "jasmine-node --verbose --color --captureExceptions spec",
+    "dev": "node server/backend.js --dev",
+    "start": "node server/backend.js",
+    "test": "jasmine-node --verbose --color --captureExceptions spec",
     "initdb": "node server/init_db.js"
   },
   "author": "m.stets",
@@ -14,11 +16,12 @@
     "body-parser": "^1.17.2",
     "cookie-parser": "^1.4.3",
     "express": "^4.15.4",
-	"moment": "^2.18.1",
-	"numeral": "^2.0.6",
+    "moment": "^2.18.1",
+    "numeral": "^2.0.6",
     "path": "^0.12.7",
-	"sqlite3": "^3.1.9",
-	"webpack": "^3.5.5"
+    "sqlite3": "^3.1.9",
+    "webpack": "^3.5.5",
+    "webpack-merge": "^4.1.0"
   },
   "devDependencies": {
     "jasmine-node": "^1.14.5",
